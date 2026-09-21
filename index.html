@@ -236,45 +236,454 @@
       </div>
       <div class="shelf" id="shelf"></div>
     </section>
-
-    <!-- ============ PANDUAN ============ -->
-    <section class="section wrap" id="panduan" aria-labelledby="panduan-title">
-      <div class="sec-head">
-        <div>
-          <p class="kicker">Panduan pengelola</p>
-          <h2 id="panduan-title">Agar data tidak hilang lagi</h2>
-        </div>
-      </div>
-      <div class="guide">
-        <ol class="steps">
-          <li>
-            <h3>Unggah lewat SDDS</h3>
-            <p>Klik <b>Edit</b> (ikon pensil) → <b>Unggah</b>, pilih berkas dan kategorinya. Berkas otomatis masuk ke folder Google Drive yang benar dan langsung tercatat, jadi tidak ada yang tercecer di grup chat.</p>
-          </li>
-          <li>
-            <h3>Atau tempel link dari Drive</h3>
-            <p>Untuk berkas yang sudah ada di Drive: <b>Edit → Tautan</b>, tempel link-nya. Judul, jenis, tanggal, dan letak folder terisi sendiri. Berkas berisi data pribadi warga diatur <b>Dibatasi</b> di Drive dan diberi label <b>Terbatas</b>.</p>
-          </li>
-          <li>
-            <h3>Cek Kotak masuk tiap minggu</h3>
-            <p><b>Kotak masuk</b> menampilkan berkas baru di Drive yang belum dicatat. <b>Perlu perhatian</b> menampilkan tautan rusak dan data yang lewat jadwal. Ringkasannya juga dikirim ke email desa setiap minggu.</p>
-          </li>
-        </ol>
-        <aside class="help">
-          <span class="help-ico" data-icon="lock" aria-hidden="true"></span>
-          <h3>Butuh berkas berlabel “Terbatas”?</h3>
-          <p>Berkas seperti DTSEN desil, RDDK, dan data per RT memuat data pribadi warga. SDDS hanya menyimpan tautannya — izin buka tetap diatur di Google Drive.</p>
-          <div class="help-actions">
-            <a class="btn" id="mail-akses" href="#">Minta akses data</a>
-            <a class="btn ghost" id="mail-lapor" href="#">Laporkan tautan rusak</a>
-          </div>
-        </aside>
-      </div>
-    </section>
   </div>
 
   <div id="view-kategori" hidden></div>
   <div id="view-statistik" hidden></div>
+
+  <!-- ============ PANDUAN PENGGUNAAN (#/panduan) ============ -->
+  <div id="view-panduan" hidden>
+    <section class="kat-head pd-head" style="--c:#C98A12">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Jejak halaman"><a href="#/">Beranda</a><span aria-hidden="true">/</span><span aria-current="page">Panduan</span></nav>
+        <div class="kat-title"><span class="chip-ico" data-icon="book"></span><div><h1>Panduan Penggunaan SDDS</h1><p class="full">Cara memakai Satu Data Desa Sumber Sari, dari mencari data sampai mengelolanya</p></div></div>
+        <p class="kat-desc">Setiap langkah ditulis urut dan memakai nama tombol yang sama dengan yang ada di layar. Di HP, “klik” berarti ketuk.</p>
+        <div class="pd-jalur">
+          <a class="pd-jalur-item" href="#/panduan/cari"><span class="pd-jalur-ico" data-icon="search"></span><span><b>Saya mencari data</b><small>Mencari, membuka, dan membaca data desa</small></span></a>
+          <a class="pd-jalur-item" href="#/panduan/mode-edit"><span class="pd-jalur-ico" data-icon="pencil"></span><span><b>Saya mengelola data</b><small>Menambah, mengunggah, dan merapikan katalog</small></span></a>
+          <a class="pd-jalur-item" href="#/panduan/admin"><span class="pd-jalur-ico" data-icon="key"></span><span><b>Saya admin</b><small>Akun, kunci editor, dan pembaruan sistem</small></span></a>
+        </div>
+        <div class="kat-meta"><button class="btn ghost" type="button" id="pd-cetak"><span data-icon="file"></span>Cetak / simpan PDF</button></div>
+      </div>
+    </section>
+
+    <section class="wrap pd-body">
+      <div class="pd-layout">
+        <details class="pd-toc" id="pd-toc" open>
+          <summary>Daftar isi</summary>
+          <nav aria-label="Daftar isi panduan">
+            <p class="pd-toc-h">Mulai</p>
+            <a href="#/panduan/apa">Apa itu SDDS?</a>
+            <a href="#/panduan/masuk">Masuk dan keluar</a>
+            <a href="#/panduan/pasang">Memasang SDDS di HP</a>
+            <a href="#/panduan/tampilan">Mengenal tampilan</a>
+            <p class="pd-toc-h">Mencari &amp; membuka data</p>
+            <a href="#/panduan/cari">Mencari data</a>
+            <a href="#/panduan/kategori">Membuka kategori</a>
+            <a href="#/panduan/katalog">Memakai katalog lengkap</a>
+            <a href="#/panduan/label">Arti label dan tanda</a>
+            <a href="#/panduan/akses">Tidak bisa membuka berkas?</a>
+            <a href="#/panduan/statistik">Membaca statistik penduduk</a>
+            <a href="#/panduan/alur">Alur Data (GSBPM)</a>
+            <a href="#/panduan/publikasi">Rak publikasi</a>
+            <p class="pd-toc-h">Mengelola data</p>
+            <a href="#/panduan/mode-edit">Masuk mode edit</a>
+            <a href="#/panduan/tambah">Menambah tautan dari Drive</a>
+            <a href="#/panduan/unggah">Mengunggah berkas</a>
+            <a href="#/panduan/ubah">Mengubah dan menghapus</a>
+            <a href="#/panduan/kelola-kategori">Mengelola kategori</a>
+            <a href="#/panduan/jadwal">Jadwal pembaruan &amp; PJ</a>
+            <a href="#/panduan/kotak">Kotak masuk</a>
+            <a href="#/panduan/perhatian">Perlu perhatian</a>
+            <a href="#/panduan/beranda">Angka beranda, menu, alur</a>
+            <a href="#/panduan/riwayat">Riwayat, sampah, cadangan</a>
+            <a href="#/panduan/otomatis">Pengaturan otomatis</a>
+            <p class="pd-toc-h">Aturan &amp; bantuan</p>
+            <a href="#/panduan/privasi">Aturan data pribadi</a>
+            <a href="#/panduan/admin">Untuk admin</a>
+            <a href="#/panduan/tanya">Tanya jawab</a>
+          </nav>
+        </details>
+
+        <article class="pd-isi">
+
+          <!-- ================= MULAI ================= -->
+          <header class="pd-grup"><p class="kicker">Bagian 1</p><h2>Mulai</h2><span class="pd-aud">Semua pengguna</span></header>
+
+          <section class="pd-sec" id="pd-apa">
+            <h3>Apa itu SDDS?</h3>
+            <p>SDDS (Satu Data Desa Sumber Sari) adalah daftar semua data desa dalam satu tempat. Berkasnya tetap tersimpan di Google Drive desa. SDDS mencatat judul, kategori, letak folder, dan tautannya, sehingga data mudah dicari dan tidak tercecer di grup chat.</p>
+            <ul class="pd-poin">
+              <li><b>Semua perangkat desa dan agen statistik Desa Cantik</b> bisa mencari dan membuka data.</li>
+              <li><b>Pengelola</b> (pemegang kunci editor) bisa menambah, mengunggah, mengubah, dan merapikan data.</li>
+              <li><b>Admin</b> mengatur akun masuk, kunci editor, dan pembaruan sistem.</li>
+            </ul>
+          </section>
+
+          <section class="pd-sec" id="pd-masuk">
+            <h3>Masuk dan keluar</h3>
+            <ol class="pd-langkah">
+              <li>Buka <b>descansumbersari.github.io/sdds-sumbersari</b> di Chrome atau Safari.</li>
+              <li>Isi <b>Email / ID perangkat</b> dan <b>Kata sandi</b> yang diberikan admin desa. Ikon mata menampilkan sandi yang sedang diketik.</li>
+              <li>Centang <b>Tetap masuk di perangkat ini (30 hari)</b> hanya di HP atau laptop pribadi.</li>
+              <li>Klik <span class="ui">Masuk</span>.</li>
+            </ol>
+            <p>Untuk keluar, klik ikon <span class="ui ui-ico" data-icon="logout"></span> di kanan atas. Selalu keluar setelah memakai komputer bersama.</p>
+            <p class="pd-tip"><span data-icon="info"></span><span>Lupa kata sandi atau belum punya akun? Klik <b>Hubungi admin desa</b> di halaman masuk.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-pasang">
+            <h3>Memasang SDDS di HP</h3>
+            <p>Setelah dipasang, SDDS terbuka dari ikon di layar utama seperti aplikasi. Daftar data tetap bisa dilihat walau sinyal lemah, memakai data yang tersimpan terakhir.</p>
+            <div class="pd-dua">
+              <div>
+                <p class="pd-sub">Android (Chrome)</p>
+                <ol class="pd-langkah">
+                  <li>Buka SDDS di <b>Chrome</b>.</li>
+                  <li>Klik <span class="ui">Pasang</span> pada ajakan di bawah layar, atau buka menu <span class="ui ui-ico" data-icon="menu"></span> lalu <b>Pasang SDDS di HP</b>.</li>
+                  <li>Klik <span class="ui">Instal</span>.</li>
+                </ol>
+              </div>
+              <div>
+                <p class="pd-sub">iPhone (Safari)</p>
+                <ol class="pd-langkah">
+                  <li>Buka SDDS di <b>Safari</b>.</li>
+                  <li>Klik tombol <b>Bagikan</b> (kotak dengan panah ke atas).</li>
+                  <li>Pilih <b>Tambah ke Layar Utama</b>, lalu <span class="ui">Tambah</span>.</li>
+                </ol>
+              </div>
+            </div>
+            <p>Di laptop, klik ikon <span class="ui ui-ico" data-icon="download"></span> di kanan atas, lalu <b>Instal</b>.</p>
+            <p class="pd-awas"><span data-icon="alert"></span><span>Link yang dibuka dari WhatsApp terbuka di dalam WhatsApp dan tidak bisa dipasang. Buka dulu di Chrome atau Safari. Di Android, SDDS menyediakan tombol <b>Buka di Chrome</b>.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-tampilan">
+            <h3>Mengenal tampilan</h3>
+            <dl class="pd-dl">
+              <dt>Menu atas</dt><dd>Pintasan ke bagian halaman. Link bergembok, misalnya <b>Data Sumber Sari</b>, langsung membuka spreadsheet di Google Drive yang aksesnya dibatasi.</dd>
+              <dt>Kotak pencarian</dt><dd>Mencari data dari semua kategori sekaligus.</dd>
+              <dt>Angka beranda</dt><dd>Ringkasan desa di bawah banner, beserta sumber angkanya.</dd>
+              <dt>Kategori</dt><dd>Kelompok data. Pendataan utama (DTSEN, RDDK, UMKM) tampil besar di depan.</dd>
+              <dt>Alur Data</dt><dd>Delapan tahap proses statistik (GSBPM), masing-masing dengan foldernya.</dd>
+              <dt>Katalog</dt><dd>Semua tautan data dalam satu daftar yang bisa dicari dan disaring.</dd>
+              <dt>Publikasi</dt><dd>Terbitan resmi desa yang siap dibaca dan dibagikan.</dd>
+              <dt>Statistik</dt><dd>Dasbor angka ringkasan penduduk.</dd>
+              <dt>Tombol kanan atas</dt><dd><span class="ui"><span data-icon="pencil"></span>Edit</span> untuk pengelola, <span class="ui ui-ico" data-icon="download"></span> pasang di HP, <span class="ui ui-ico" data-icon="moon"></span> tema terang/gelap, dan <span class="ui ui-ico" data-icon="logout"></span> keluar.</dd>
+            </dl>
+          </section>
+
+          <!-- ================= MENCARI ================= -->
+          <header class="pd-grup"><p class="kicker">Bagian 2</p><h2>Mencari &amp; membuka data</h2><span class="pd-aud">Semua pengguna</span></header>
+
+          <section class="pd-sec" id="pd-cari">
+            <h3>Mencari data</h3>
+            <ol class="pd-langkah">
+              <li>Ketik kata kunci di kotak pencarian di beranda. Di laptop, tekan <kbd>/</kbd> untuk langsung mengetik.</li>
+              <li>Hasil muncul sambil mengetik: kategori yang cocok di atas, lalu tautan data di bawahnya.</li>
+              <li>Klik hasil yang dicari, atau pilih dengan tombol panah lalu tekan <kbd>Enter</kbd>.</li>
+            </ol>
+            <p>Pencarian membaca judul, keterangan, letak folder, jenis berkas, nama penanggung jawab, dan nama kategori. Contoh kata kunci: <i>posyandu</i>, <i>RT 5</i>, <i>desil</i>, <i>pdf</i>.</p>
+            <p class="pd-tip"><span data-icon="info"></span><span>Tidak ketemu? Pakai kata yang lebih pendek, atau buka <b>Katalog</b> lalu saring per kategori.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-kategori">
+            <h3>Membuka kategori</h3>
+            <ol class="pd-langkah">
+              <li>Di beranda, klik kartu kategori (misalnya <b>DTSEN</b>), atau salah satu tombol <b>Populer</b> di bawah kotak pencarian.</li>
+              <li>Halaman kategori menampilkan jumlah tautan dan tanggal pembaruan terakhir.</li>
+              <li>Klik <span class="ui">Buka folder utama</span> untuk langsung ke folder induk kategori di Google Drive.</li>
+              <li>Saring dengan kotak <b>Cari di …</b> dan tombol jenis berkas (Folder, PDF, dan seterusnya).</li>
+              <li>Klik <span class="ui"><span data-icon="link"></span>Salin tautan halaman</span> untuk membagikan halaman kategori ke grup.</li>
+            </ol>
+          </section>
+
+          <section class="pd-sec" id="pd-katalog">
+            <h3>Memakai katalog lengkap</h3>
+            <p>Bagian <b>Katalog</b> di beranda memuat semua tautan data.</p>
+            <ul class="pd-poin">
+              <li><b>Kotak cari</b>: mencari judul, lokasi, atau keterangan.</li>
+              <li><b>Pilihan kategori</b>: menampilkan satu kategori saja.</li>
+              <li><b>Urutan</b>: Terbaru diperbarui, Terlama, atau Judul A–Z.</li>
+              <li><b>Tombol jenis berkas</b>: Semua, Folder, PDF, tabel, dokumen, dan media.</li>
+              <li><span class="ui ui-warn"><span data-icon="alert"></span>Perlu perhatian</span> muncul bila ada tautan yang bermasalah atau lewat jadwal.</li>
+              <li>Klik <b>Tampilkan … tautan lainnya</b> di bawah daftar untuk melihat lebih banyak.</li>
+            </ul>
+            <p>Klik judul untuk membuka berkasnya di Google Drive. Ikon <span class="ui ui-ico" data-icon="copy"></span> di ujung baris menyalin tautannya.</p>
+          </section>
+
+          <section class="pd-sec" id="pd-label">
+            <h3>Arti label dan tanda</h3>
+            <div class="tbl-wrap"><table class="pd-tabel">
+              <thead><tr><th>Tanda</th><th>Arti</th></tr></thead>
+              <tbody>
+                <tr><td><code>DIR</code> <code>PDF</code> <code>XLSX</code> <code>SHEET</code> <code>DOC</code> <code>SLIDE</code> <code>IMG</code> <code>VID</code> <code>URL</code></td><td>Jenis berkas: folder, PDF, Excel, Google Sheets, Word/Docs, slide, gambar, video, dan tautan lain.</td></tr>
+                <tr><td><span class="badge lock"><span data-icon="lock"></span>Terbatas</span></td><td>Memuat data pribadi warga (NIK, nama, alamat). Hanya bisa dibuka akun Google yang diberi izin.</td></tr>
+                <tr><td><span class="badge main">Folder utama</span></td><td>Folder induk sebuah kategori.</td></tr>
+                <tr><td><span class="badge bad"><span data-icon="alert"></span>Tautan bermasalah</span></td><td>Berkas tidak bisa dibuka: terhapus, dipindah, atau aksesnya dicabut.</td></tr>
+                <tr><td><span class="badge bad"><span data-icon="globe"></span>Terbuka publik</span></td><td>Berlabel Terbatas, tetapi di Drive bisa dibuka siapa saja yang punya link. Perlu segera diatur <b>Dibatasi</b>.</td></tr>
+                <tr><td><span class="badge due"><span data-icon="clock"></span>Perlu diperbarui</span></td><td>Sudah lewat jadwal pembaruan.</td></tr>
+                <tr><td><span class="badge soon"><span data-icon="clock"></span>Segera diperbarui</span></td><td>Jadwal pembaruan tinggal 7 hari lagi.</td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section class="pd-sec" id="pd-akses">
+            <h3>Tidak bisa membuka berkas?</h3>
+            <ol class="pd-langkah">
+              <li>Periksa akun Google yang sedang aktif di browser (foto profil di kanan atas Google Drive). Izin buka mengikuti <b>akun Google</b> itu, bukan akun masuk SDDS.</li>
+              <li>Berkas <b>Terbatas</b> dan belum punya izin: klik <span class="ui">Minta akses data</span> di bawah. Email ke admin sudah berisi formatnya; tinggal lengkapi judul data dan keperluannya. Bisa juga klik <b>Minta akses</b> di halaman Google Drive.</li>
+              <li>Berkas hilang atau isinya salah: klik <span class="ui">Laporkan tautan rusak</span>.</li>
+            </ol>
+            <aside class="help pd-help">
+              <span class="help-ico" data-icon="lock"></span>
+              <h3>Butuh berkas berlabel “Terbatas”?</h3>
+              <p>Berkas seperti DTSEN desil, RDDK, dan data per RT memuat data pribadi warga. SDDS hanya menyimpan tautannya. Izin buka tetap diatur di Google Drive.</p>
+              <div class="help-actions">
+                <a class="btn" id="mail-akses" href="#">Minta akses data</a>
+                <a class="btn ghost" id="mail-lapor" href="#">Laporkan tautan rusak</a>
+              </div>
+            </aside>
+          </section>
+
+          <section class="pd-sec" id="pd-statistik">
+            <h3>Membaca statistik penduduk</h3>
+            <p>Menu <b>Statistik</b> menampilkan angka ringkasan yang dihitung otomatis setiap pagi dari tab <b>Data Penduduk</b> di spreadsheet DATA SUMBER SARI. Nama, NIK, dan alamat tidak pernah tampil di halaman ini.</p>
+            <dl class="pd-dl">
+              <dt>Penduduk</dt><dd>Jumlah warga di tab Data Penduduk. Orang yang tercatat dua kali (NIK dan nama sama) dihitung satu kali.</dd>
+              <dt>Kepala keluarga</dt><dd>Jumlah baris berstatus KEPALA KELUARGA di kolom hubungan keluarga.</dd>
+              <dt>Rasio jenis kelamin</dt><dd>Jumlah laki-laki per 100 perempuan. Di atas 100 berarti laki-laki lebih banyak.</dd>
+              <dt>Usia produktif</dt><dd>Persentase warga berumur 15–64 tahun.</dd>
+              <dt>Rasio ketergantungan</dt><dd>Jumlah anak (di bawah 15 tahun) dan lansia (65 tahun ke atas) per 100 warga usia produktif.</dd>
+              <dt>Median umur</dt><dd>Separuh penduduk lebih muda dari angka ini.</dd>
+            </dl>
+            <ul class="pd-poin">
+              <li>Grafik: piramida penduduk, penduduk per RT, pendidikan, pekerjaan, status perkawinan, BPJS, desil DTSEN, bantuan sosial, agama, suku, dan usaha warga. Arahkan kursor atau ketuk batang untuk melihat angkanya.</li>
+              <li>Klik <span class="ui"><span data-icon="table"></span>Lihat tabel</span> di bawah grafik untuk angka lengkapnya.</li>
+              <li>Kartu <b>Kualitas data sumber</b> menunjukkan hal yang perlu dirapikan di spreadsheet, misalnya orang tercatat ganda atau NIK kosong.</li>
+              <li><span class="ui"><span data-icon="cycle"></span>Muat ulang</span> mengambil angka terbaru. <span class="ui"><span data-icon="lock"></span>Buka data sumber</span> membuka spreadsheet aslinya (butuh izin).</li>
+            </ul>
+            <p class="pd-tip"><span data-icon="info"></span><span>Kelompok yang berisi kurang dari 3 orang digabung ke “Lainnya” agar tidak menunjuk warga tertentu.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-alur">
+            <h3>Alur Data (GSBPM)</h3>
+            <p>Bagian <b>Alur Data</b> mengikuti delapan tahap proses bisnis statistik (GSBPM) yang dipakai BPS. Setiap tahap punya folder sendiri di Google Drive. Simpan berkas kegiatan di folder tahap yang sesuai:</p>
+            <ol class="pd-tahap">
+              <li><b>Spesifikasi Kebutuhan</b>: instrumen identifikasi kebutuhan, notulen dan daftar hadir konsultasi, daftar ketersediaan data.</li>
+              <li><b>Desain</b>: rancangan output, rancangan kuesioner, metadata dan konsep-definisi.</li>
+              <li><b>Membangun</b>: kuesioner final, buku pedoman, SOP kegiatan, hasil uji coba.</li>
+              <li><b>Pengumpulan</b>: materi dan daftar hadir pelatihan, hasil dan foto pendataan.</li>
+              <li><b>Pengolahan</b>: file entri, hasil validasi dan pembersihan data, tabel hasil olahan.</li>
+              <li><b>Analisis</b>: draf tabel dan grafik, catatan analisis, hasil pemeriksaan kualitas.</li>
+              <li><b>Diseminasi</b>: publikasi final, infografis, bukti tayang di website atau papan informasi.</li>
+              <li><b>Evaluasi</b>: notulen evaluasi, catatan kendala dan rekomendasi, bukti pemanfaatan data.</li>
+            </ol>
+          </section>
+
+          <section class="pd-sec" id="pd-publikasi">
+            <h3>Rak publikasi</h3>
+            <p>Bagian <b>Publikasi</b> memajang terbitan resmi desa. Klik sampulnya untuk membuka berkas. Pengelola menambah terbitan ke rak dengan menyalakan <b>Tampilkan di rak publikasi</b> saat menambah atau mengubah tautan.</p>
+          </section>
+
+          <!-- ================= MENGELOLA ================= -->
+          <header class="pd-grup"><p class="kicker">Bagian 3</p><h2>Mengelola data</h2><span class="pd-aud pengelola">Pengelola · butuh kunci editor</span></header>
+
+          <section class="pd-sec" id="pd-mode-edit">
+            <h3>Masuk mode edit</h3>
+            <p>Mode edit dipakai pengelola untuk mengubah katalog. Perubahan langsung tersimpan ke Google Sheet database dan terlihat di semua perangkat.</p>
+            <ol class="pd-langkah">
+              <li>Klik <span class="ui"><span data-icon="pencil"></span>Edit</span> di kanan atas.</li>
+              <li>Isi <b>Kunci editor</b> dari admin, lalu klik <span class="ui">Masuk mode edit</span>. Browser akan mengingat kunci ini, jadi berikutnya tidak ditanya lagi.</li>
+              <li>Bilah hitam muncul di bawah layar dengan tombol <b>Tautan, Unggah, Kategori, Kotak masuk, Perlu perhatian, Lainnya,</b> dan <b>Selesai</b>. Tulisan <b>Tersimpan ke Google Sheet</b> berarti sudah tersambung.</li>
+              <li>Klik <span class="ui"><span data-icon="check"></span>Selesai</span> untuk keluar dari mode edit.</li>
+            </ol>
+            <p class="pd-awas"><span data-icon="alert"></span><span>Kunci editor berbeda dari kata sandi masuk. Jangan dibagikan di grup. Kalau bocor, minta admin menggantinya (lihat <a href="#/panduan/admin">Untuk admin</a>).</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-tambah">
+            <h3>Menambah tautan dari Google Drive</h3>
+            <p>Dipakai untuk berkas atau folder yang sudah ada di Google Drive.</p>
+            <ol class="pd-langkah">
+              <li>Di Google Drive, klik kanan berkas atau folder → <b>Bagikan</b> → <b>Salin link</b>.</li>
+              <li>Di SDDS, klik <span class="ui"><span data-icon="plus"></span>Tautan</span> di bilah bawah. Dari halaman kategori, bisa juga klik <b>Tambah tautan di sini</b>.</li>
+              <li>Tempel link di kolom <b>Link Google Drive</b>. Judul, jenis, tanggal diperbarui, dan letak di Drive terisi otomatis. Periksa dan rapikan judulnya.</li>
+              <li>Pilih kategori. Satu tautan boleh masuk lebih dari satu kategori.</li>
+              <li>Nyalakan <b>Terbatas</b> bila berkas memuat NIK, nama, atau alamat warga.</li>
+              <li>Bila perlu, nyalakan <b>Folder utama kategori</b> (jadi tombol “Buka folder utama”) atau <b>Tampilkan di rak publikasi</b>, dan isi jadwal pembaruan.</li>
+              <li>Klik <span class="ui">Tambah</span>.</li>
+            </ol>
+            <p class="pd-tip"><span data-icon="info"></span><span>Judul yang mudah dicari memuat jenis data, wilayah, dan periode. Contoh: <i>Laporan Posyandu RT 3 – Agustus 2026</i>.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-unggah">
+            <h3>Mengunggah berkas</h3>
+            <p>Dipakai untuk berkas yang masih ada di HP atau laptop. Berkas langsung masuk ke folder Google Drive desa dan tercatat di SDDS.</p>
+            <ol class="pd-langkah">
+              <li>Klik <span class="ui"><span data-icon="upload"></span>Unggah</span> di bilah bawah, atau tombol Unggah di halaman kategori.</li>
+              <li>Pilih berkas. Boleh beberapa sekaligus, maksimal <b>20 MB per berkas</b>.</li>
+              <li>Periksa judul setiap berkas.</li>
+              <li>Pilih kategori. <b>Simpan ke folder</b> otomatis mengikuti kategori, atau tempel link folder lain.</li>
+              <li>Nyalakan <b>Terbatas</b> bila perlu, dan isi jadwal pembaruan bila datanya rutin.</li>
+              <li>Klik <span class="ui">Unggah</span>.</li>
+            </ol>
+            <p class="pd-tip"><span data-icon="info"></span><span>Berkas lebih dari 20 MB (misalnya video): unggah langsung di Google Drive, lalu catat dengan <b>Tautan</b>.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-ubah">
+            <h3>Mengubah dan menghapus</h3>
+            <ol class="pd-langkah">
+              <li>Dalam mode edit, setiap tautan punya ikon <span class="ui ui-ico" data-icon="pencil"></span>. Klik untuk mengganti judul, link, kategori, atau label, lalu klik <span class="ui">Simpan</span>.</li>
+              <li>Untuk menghapus, buka ikon pensil yang sama → <span class="ui">Hapus</span> → klik lagi pada <b>Yakin hapus? Klik lagi</b>.</li>
+              <li>Tautan yang terhapus masuk <b>Sampah</b> selama 30 hari. Untuk mengembalikan: <b>Lainnya → Riwayat, sampah &amp; cadangan</b> → tab <b>Sampah</b> → <span class="ui"><span data-icon="restore"></span>Pulihkan</span>.</li>
+            </ol>
+            <p class="pd-awas"><span data-icon="alert"></span><span>Menghapus di SDDS hanya menghapus catatannya. Berkas di Google Drive tidak ikut terhapus.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-kelola-kategori">
+            <h3>Mengelola kategori</h3>
+            <p class="pd-sub">Menambah kategori</p>
+            <ol class="pd-langkah">
+              <li>Klik <span class="ui"><span data-icon="plus"></span>Kategori</span> di bilah bawah.</li>
+              <li>Isi <b>Nama kategori</b>, <b>Nama lengkap / singkatan</b> (opsional), pilih ikon dan warna, lalu tulis <b>Deskripsi</b> singkat.</li>
+              <li>Opsional: tempel <b>Folder unggahan</b> agar berkas yang diunggah ke kategori ini masuk ke folder tersebut.</li>
+              <li>Nyalakan <b>Tampilkan besar di depan</b> untuk kategori utama.</li>
+              <li>Klik <span class="ui">Buat kategori</span>.</li>
+            </ol>
+            <p>Untuk mengubah, klik ikon <span class="ui ui-ico" data-icon="pencil"></span> pada kartu kategori di beranda. Tombol <span class="ui">Hapus kategori</span> ada di bagian bawah jendela yang sama. Tautan di dalamnya tidak ikut terhapus, hanya dilepas dari kategori itu. Kategori yang terhapus bisa dipulihkan dari Sampah selama 30 hari.</p>
+          </section>
+
+          <section class="pd-sec" id="pd-jadwal">
+            <h3>Jadwal pembaruan &amp; penanggung jawab</h3>
+            <p>Untuk data yang diperbarui rutin, seperti laporan Posyandu bulanan.</p>
+            <ol class="pd-langkah">
+              <li>Di jendela tautan, buka bagian <b>Jadwal pembaruan</b>. Pilih <b>Diperbarui setiap</b>: Bulanan, Triwulan (3 bulan), Semester (6 bulan), atau Tahunan.</li>
+              <li>Isi <b>Penanggung jawab</b> (misalnya <i>Bu Eni – Posyandu</i>) dan <b>Email penanggung jawab</b>.</li>
+              <li>Tujuh hari sebelum jatuh tempo, tautan diberi label <b>Segera diperbarui</b>. Lewat dari itu, labelnya <b>Perlu diperbarui</b> dan penanggung jawab menerima email pengingat setiap minggu.</li>
+              <li>Setelah data di Drive diperbarui, klik <span class="ui"><span data-icon="check"></span>Sudah diperbarui</span> pada tautan itu. Tanggalnya jadi hari ini dan hitungan jadwal mulai lagi.</li>
+            </ol>
+          </section>
+
+          <section class="pd-sec" id="pd-kotak">
+            <h3>Kotak masuk</h3>
+            <p>Setiap pagi SDDS memeriksa folder Google Drive desa. Berkas baru yang belum dicatat muncul di <b>Kotak masuk</b>. Angka di tombolnya adalah jumlah berkas baru.</p>
+            <ol class="pd-langkah">
+              <li>Klik <span class="ui"><span data-icon="inbox"></span>Kotak masuk</span>. Ada dua tab: <b>Berkas baru</b> dan <b>Berkas lama</b>.</li>
+              <li>Klik <span class="ui"><span data-icon="plus"></span>Catat</span> untuk mencatat berkas. Jendela tautan terbuka dengan data yang sudah terisi; lengkapi kategori lalu simpan.</li>
+              <li>Klik <span class="ui">Abaikan</span> untuk berkas yang tidak perlu dicatat sendiri, misalnya foto di dalam folder yang sudah tercatat.</li>
+              <li>Berkas bertanda <b>sudah terjangkau lewat “…”</b> berada di dalam folder yang sudah tercatat. Klik <b>Abaikan semuanya</b>, lalu klik sekali lagi untuk memastikan.</li>
+            </ol>
+            <p><span class="ui"><span data-icon="cycle"></span>Pindai berkas baru</span> memeriksa sekarang tanpa menunggu besok pagi. <span class="ui"><span data-icon="search"></span>Cari berkas lama</span> memeriksa seluruh isi folder, termasuk berkas lama, dan butuh waktu lebih lama.</p>
+          </section>
+
+          <section class="pd-sec" id="pd-perhatian">
+            <h3>Perlu perhatian</h3>
+            <p>Tombol <span class="ui"><span data-icon="alert"></span>Perlu perhatian</span> mengumpulkan semua hal yang harus ditindaklanjuti. Angka di tombolnya adalah jumlah masalah.</p>
+            <dl class="pd-dl">
+              <dt>Tautan bermasalah</dt><dd>Berkas terhapus, dipindah, atau tidak bisa diakses akun pengelola. Klik <b>Ubah</b> dan ganti link-nya.</dd>
+              <dt>Terbuka publik</dt><dd>Berkas Terbatas yang bisa dibuka siapa saja. Klik <b>Buka di Drive</b> → <b>Bagikan</b> → <b>Akses umum: Dibatasi</b>.</dd>
+              <dt>Perlu diperbarui / Segera diperbarui</dt><dd>Perbarui datanya, lalu klik <b>Sudah diperbarui</b>.</dd>
+            </dl>
+            <p>Semua tautan diperiksa otomatis setiap pagi. Untuk memeriksa sekarang, klik <span class="ui"><span data-icon="cycle"></span>Periksa semua tautan</span>.</p>
+          </section>
+
+          <section class="pd-sec" id="pd-beranda">
+            <h3>Angka beranda, menu atas, dan alur</h3>
+            <ul class="pd-poin">
+              <li><b>Angka beranda</b>: <b>Lainnya → Angka beranda</b>. Ubah label, nilai, satuan, dan keterangan setiap angka. Atur urutannya dengan tombol panah, isi <b>Sumber angka</b> (misalnya nama portal dan bulan data), lalu <span class="ui">Simpan</span>.</li>
+              <li><b>Menu atas</b>: <b>Lainnya → Menu atas</b>. Isi nama menu dan link-nya, misalnya <i>Data Sumber Sari</i>. Nyalakan <b>Tandai terbatas</b> bila link berisi data pribadi, lalu <span class="ui">Simpan</span>.</li>
+              <li><b>Link tahap alur</b>: di bagian Alur Data, klik ikon <span class="ui ui-ico" data-icon="pencil"></span> di samping link tahap, lalu ganti link-nya.</li>
+            </ul>
+          </section>
+
+          <section class="pd-sec" id="pd-riwayat">
+            <h3>Riwayat, sampah, dan cadangan</h3>
+            <p>Buka <b>Lainnya → Riwayat, sampah &amp; cadangan</b>.</p>
+            <dl class="pd-dl">
+              <dt>Riwayat</dt><dd>Siapa mengubah apa dan kapan, memakai nama akun SDDS. Bisa dicari.</dd>
+              <dt>Sampah</dt><dd>Tautan dan kategori yang dihapus. Klik <b>Pulihkan</b> dalam 30 hari.</dd>
+              <dt>Cadangan</dt><dd>Salinan database dibuat otomatis setiap minggu di folder <b>SDDS – Cadangan Database</b>. Delapan salinan terakhir disimpan. Klik <b>Cadangkan sekarang</b> sebelum perubahan besar.</dd>
+            </dl>
+          </section>
+
+          <section class="pd-sec" id="pd-otomatis">
+            <h3>Pengaturan otomatis</h3>
+            <div class="tbl-wrap"><table class="pd-tabel">
+              <thead><tr><th>Kapan</th><th>Yang dikerjakan SDDS</th></tr></thead>
+              <tbody>
+                <tr><td>Setiap pagi, sekitar pukul 06.00</td><td>Memeriksa semua tautan, mencari berkas baru untuk Kotak masuk, dan menghitung ulang statistik penduduk.</td></tr>
+                <tr><td>Setiap minggu</td><td>Membuat cadangan database, lalu mengirim email laporan dan pengingat ke penanggung jawab. Email hanya dikirim bila ada yang perlu ditindaklanjuti.</td></tr>
+              </tbody>
+            </table></div>
+            <p>Pengaturannya ada di <b>Lainnya → Pengaturan otomatis</b>:</p>
+            <ul class="pd-poin">
+              <li><b>Email penerima laporan mingguan</b> dan sakelar <b>Kirim laporan &amp; pengingat setiap minggu</b>.</li>
+              <li><b>Folder yang dipantau kotak masuk</b>: satu link folder per baris. Subfolder ikut dipantau.</li>
+              <li><b>Folder unggahan bawaan</b>: dipakai bila kategori belum punya folder unggahan.</li>
+              <li><b>Spreadsheet sumber dasbor statistik</b>: tempel link <b>tab</b> data penduduk (link yang berisi <code>gid=</code>). Hanya tab itu yang dihitung.</li>
+              <li>Bagian <b>Jalankan sekarang</b>: <b>Kirim laporan</b>, <b>Cadangkan database</b>, dan <b>Hitung ulang dasbor</b> tanpa menunggu jadwal.</li>
+            </ul>
+          </section>
+
+          <!-- ================= ATURAN & BANTUAN ================= -->
+          <header class="pd-grup"><p class="kicker">Bagian 4</p><h2>Aturan &amp; bantuan</h2></header>
+
+          <section class="pd-sec" id="pd-privasi">
+            <h3>Aturan data pribadi</h3>
+            <p>Sebagian data desa memuat NIK, nama, dan alamat warga. Aturan ini berlaku untuk semua pengguna SDDS.</p>
+            <ul class="pd-poin">
+              <li>Berkas berisi data pribadi: di Google Drive atur <b>Akses umum: Dibatasi</b> dan bagikan hanya ke akun yang memerlukan. Di SDDS nyalakan label <b>Terbatas</b>.</li>
+              <li>Jangan kirim tangkapan layar atau salinan berkas berisi NIK ke grup WhatsApp. Kirim link SDDS atau link Drive saja. Orang yang tidak punya izin tidak bisa membukanya.</li>
+              <li>Kata sandi masuk dan kunci editor jangan ditulis di grup, dan jangan sama dengan kata sandi Gmail.</li>
+              <li>Pakai <b>Tetap masuk</b> hanya di perangkat pribadi. Keluar setelah memakai komputer bersama.</li>
+              <li>Melihat label <b>Terbuka publik</b>? Segera atur berkas itu menjadi <b>Dibatasi</b> di Google Drive.</li>
+            </ul>
+          </section>
+
+          <section class="pd-sec" id="pd-admin">
+            <h3>Untuk admin</h3>
+            <span class="pd-aud admin">Admin</span>
+            <p class="pd-sub">Letak bagian-bagian SDDS</p>
+            <dl class="pd-dl">
+              <dt>Website</dt><dd>Repositori GitHub <b>descansumbersari/sdds-sumbersari</b>, tayang lewat GitHub Pages.</dd>
+              <dt>Database katalog</dt><dd>Google Sheet <b>SDDS – Database Katalog</b> di akun Google desa. Pengelola bisa membukanya lewat <b>Lainnya → Buka spreadsheet database</b>.</dd>
+              <dt>Mesin otomatis</dt><dd>Proyek Google Apps Script di akun Google desa, diterbitkan sebagai Web App.</dd>
+              <dt>Data penduduk</dt><dd>Spreadsheet <b>DATA SUMBER SARI</b>, tab <b>Data Penduduk</b>.</dd>
+              <dt>Berkas desa</dt><dd>Folder <b>DESA CANTIK</b> di Google Drive desa.</dd>
+            </dl>
+
+            <p class="pd-sub">Menambah atau mencabut akun masuk</p>
+            <ol class="pd-langkah">
+              <li>Buka halaman <b>ganti-sandi.html</b> di alamat SDDS (tambahkan <i>ganti-sandi.html</i> di belakang alamat situs).</li>
+              <li>Isi <b>Nama akun</b>, <b>Email / ID</b>, dan <b>Kata sandi</b>, lalu klik <span class="ui">Buat kode akun</span> → <span class="ui">Salin kode</span>. Kata sandinya tidak disimpan; yang dibuat hanya kode acak.</li>
+              <li>Di GitHub, buka file <b>data/katalog.js</b> → ikon pensil → tempel kode itu di daftar <b>akun</b> (bagian <i>akses</i>) → <b>Commit changes</b>.</li>
+              <li>Untuk mencabut akses seseorang atau mengganti sandi, hapus baris akunnya, lalu <b>Commit changes</b>.</li>
+            </ol>
+
+            <p class="pd-sub">Mengganti kunci editor</p>
+            <ol class="pd-langkah">
+              <li>Buka proyek Apps Script di akun Google desa → <b>Setelan project</b> (ikon roda gigi di kiri).</li>
+              <li>Di bagian <b>Properti skrip</b>, klik <b>Edit properti skrip</b>, hapus baris <b>KUNCI_HASH</b>, lalu klik <b>Simpan properti skrip</b>.</li>
+              <li>Buka SDDS → <b>Edit</b>. Jendela <b>Buat kunci editor</b> muncul. Buat kunci baru, lalu bagikan hanya ke pengelola.</li>
+            </ol>
+
+            <p class="pd-sub">Memperbarui kode</p>
+            <ol class="pd-langkah">
+              <li><b>File website</b>: di GitHub buka file yang diganti → ikon pensil → tempel isi baru → <b>Commit changes</b>. Tunggu 1–2 menit sampai tanda build hijau, lalu muat ulang SDDS dengan <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> (Mac: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>).</li>
+              <li><b>Apps Script</b>: tempel isi baru di <b>Kode.gs</b> → simpan → <b>Terapkan → Kelola deployment</b> → ikon pensil → <b>Versi: Versi baru</b> → <b>Terapkan</b>.</li>
+            </ol>
+            <p class="pd-awas"><span data-icon="alert"></span><span>Tanpa <b>Versi baru</b>, website tetap memakai kode Apps Script yang lama. Tanda paling mudah: muncul tulisan <b>Apps Script perlu diperbarui</b> di bilah edit.</span></p>
+          </section>
+
+          <section class="pd-sec" id="pd-tanya">
+            <h3>Tanya jawab</h3>
+            <div class="pd-faq-list">
+              <details class="pd-faq"><summary>Perubahan saya tidak muncul di HP atau laptop lain.</summary><p>Perubahan tersimpan di Google Sheet dan terbaca saat halaman dibuka. Muat ulang halaman di perangkat lain (di HP: tarik layar ke bawah, atau tutup lalu buka lagi).</p></details>
+              <details class="pd-faq"><summary>Muncul tulisan “Data terbaru dari Google Sheet belum bisa dimuat”.</summary><p>Koneksi internet sedang lemah. Yang tampil adalah data tersimpan terakhir. Klik <b>Coba lagi</b> setelah sinyal membaik.</p></details>
+              <details class="pd-faq"><summary>Muncul “Kunci editor salah”.</summary><p>Kunci editor sudah diganti admin. Minta kunci yang terbaru, lalu klik <b>Edit</b> dan masukkan lagi.</p></details>
+              <details class="pd-faq"><summary>Berkas tetap tidak bisa dibuka padahal sudah diberi izin.</summary><p>Akun Google yang aktif di browser mungkin berbeda dengan akun yang diberi izin. Di Google Drive, klik foto profil di kanan atas dan pilih akun yang benar.</p></details>
+              <details class="pd-faq"><summary>Angka statistik berbeda dengan catatan lain.</summary><p>Statistik hanya menghitung tab <b>Data Penduduk</b>, dan orang yang tercatat ganda dihitung sekali. Lihat kartu <b>Kualitas data sumber</b> untuk tahu apa yang perlu dirapikan. Setelah spreadsheet diperbaiki, angka ikut berubah besok pagi. Pengelola bisa langsung klik <b>Hitung ulang sekarang</b>.</p></details>
+              <details class="pd-faq"><summary>Tidak ada pilihan Instal di HP.</summary><p>Pastikan SDDS dibuka di Chrome (Android) atau Safari (iPhone), bukan di dalam WhatsApp. Di iPhone, pemasangan lewat tombol <b>Bagikan → Tambah ke Layar Utama</b>. Lihat <a href="#/panduan/pasang">Memasang SDDS di HP</a>.</p></details>
+              <details class="pd-faq"><summary>Berkas saya lebih dari 20 MB.</summary><p>Unggah langsung di Google Drive, lalu catat di SDDS dengan <b>Edit → Tautan</b>.</p></details>
+              <details class="pd-faq"><summary>Saya tidak sengaja menghapus tautan atau kategori.</summary><p>Buka <b>Lainnya → Riwayat, sampah &amp; cadangan</b> → tab <b>Sampah</b> → <b>Pulihkan</b>. Bisa dilakukan sampai 30 hari setelah dihapus.</p></details>
+              <details class="pd-faq"><summary>Saya lupa kata sandi masuk.</summary><p>Hubungi admin desa. Admin membuat kode akun baru untuk Anda (lihat <a href="#/panduan/admin">Untuk admin</a>).</p></details>
+            </div>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </div>
+
 </main>
 
 <footer class="footer">
@@ -290,6 +699,7 @@
       <a id="link-drive" href="#" target="_blank" rel="noopener">Folder induk Google Drive</a>
       <a href="#katalog">Katalog data</a>
       <a href="#/statistik">Statistik penduduk</a>
+      <a href="#/panduan">Panduan penggunaan</a>
       <a href="#" id="link-pasang" data-act="pasang">Pasang SDDS di HP</a>
     </div>
     <div class="footer-links">
