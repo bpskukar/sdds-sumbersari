@@ -134,7 +134,9 @@
     var usahaTot = jumlah(d.usaha || []);
     var q = d.kualitas || {};
     var cekKualitas = [
-      ["NIK tercatat ganda", q.nikGanda, "Baris dengan NIK yang sama muncul lebih dari sekali (dihitung satu kali)."],
+      ["Orang tercatat ganda", q.nikGanda, "NIK dan nama sama muncul lebih dari sekali (dihitung satu kali)."],
+      ["NIK sama, nama berbeda", q.nikBentrok, "Keduanya tetap dihitung. Kemungkinan salah ketik NIK."],
+      ["NIK tidak 16 digit", q.nikPanjang, "Periksa penulisan NIK di spreadsheet."],
       ["NIK kosong", q.nikKosong, "Baris tanpa NIK tetap dihitung, tetapi tidak bisa dicek ganda."],
       ["Jenis kelamin kosong", q.jkKosong, "Tidak masuk hitungan laki-laki/perempuan."],
       ["Umur tidak terbaca", q.usiaKosong, "Kolom Usia kosong dan tanggal lahir tidak valid."],
@@ -162,7 +164,7 @@
       (usahaTot ? kartuBatang("Usaha warga", fA(usahaTot) + " jiwa mencatat usaha", d.usaha, usahaTot, "jiwa") : "") +
       kualitas +
       "</div>" +
-      '<p class="viz-note">Kategori berisi kurang dari 3 orang digabung ke “Lainnya” agar tidak menunjuk warga tertentu. Tab yang dibaca: ' + esc((d.sumber && d.sumber.tab || []).join(", ")) + ".</p>";
+      '<p class="viz-note">Kategori berisi kurang dari 3 orang digabung ke “Lainnya” agar tidak menunjuk warga tertentu. Tab yang dibaca: ' + esc((d.sumber && d.sumber.tab || []).join(", ")) + (d.sumber && d.sumber.baris ? " (" + fA(d.sumber.baris) + " baris berisi nama/NIK)" : "") + ".</p>";
   }
 
   /* ---------------- tooltip ---------------- */
