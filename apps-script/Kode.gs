@@ -108,6 +108,7 @@ function aktifkanOtomatis() {
     '• Database dicadangkan setiap minggu\n' +
     '• Email pengingat dikirim setiap minggu\n\n' +
     'Pemeriksaan pertama: ' + (r.belum ? 'masih berlanjut beberapa menit lagi.' : 'selesai.') +
+    (r.galat.length ? '\n\nCatatan: ' + r.galat.join('\n') : '') +
     '\n\nLangkah berikutnya: Terapkan → Kelola deployment → pensil → Versi baru → Terapkan.');
 }
 
@@ -269,6 +270,7 @@ function info_(data) {
     cadanganTerakhir: p.CADANGAN_TERAKHIR || '',
     emailTerakhir: p.EMAIL_TERAKHIR ? tglJam_(new Date(+p.EMAIL_TERAKHIR)) : '',
     dasborTerakhir: p.DASBOR_TERAKHIR || '',
+    galatTerakhir: p.GALAT_TERAKHIR || '',
     kotakBaru: baru,
     kotakLama: lama
   };
@@ -358,18 +360,23 @@ function jalankanSemua_(batasMs) {
   var p = props_(), belum = false, r;
   var jam20 = 20 * 3600 * 1000;
 
-  if (+(p.getProperty('CEK_I') || 0) > 0 || umur_(p.getProperty('CEK_WAKTU')) > jam20) {
-    r = tugasCek_(Math.max(sisa() * 0.45, 20000), false);
-    if (!r.selesai) belum = true;
+  var galat = [];
+  function coba(nama, fn) {
+    try { var h = fn(); if (h && h.selesai === false) belum = true; }
+    catch (e) { galat.push(nama + ': ' + String(e && e.message || e)); }
   }
-  if (sisa() > 30000) { r = tugasPindai_(Math.min(sisa() * 0.5, 90000)); if (!r.selesai) belum = true; }
-  if (p.getProperty('PENUH_JALAN') === '1' && sisa() > 40000) { r = tugasPindaiPenuh_(sisa() - 30000, false); if (!r.selesai) belum = true; }
+  if (+(p.getProperty('CEK_I') || 0) > 0 || umur_(p.getProperty('CEK_WAKTU')) > jam20) {
+    coba('Cek tautan', function () { return tugasCek_(Math.max(sisa() * 0.45, 20000), false); });
+  }
+  if (sisa() > 30000) coba('Pindai berkas baru', function () { return tugasPindai_(Math.min(sisa() * 0.5, 90000)); });
+  if (p.getProperty('PENUH_JALAN') === '1' && sisa() > 40000) coba('Pindai seluruh folder', function () { return tugasPindaiPenuh_(sisa() - 30000, false); });
   try { bersihkanSampah_(); } catch (e) { /* abaikan */ }
-  if (sisa() > 30000 && umur_(p.getProperty('DASBOR_WAKTU')) > jam20) { try { hitungDasbor_(); } catch (e) { /* abaikan */ } }
-  if (umur_(p.getProperty('CADANGAN_WAKTU')) > 6.5 * 24 * 3600 * 1000) { try { cadangkan_('Sistem'); } catch (e) { /* abaikan */ } }
-  if (!belum && umur_(p.getProperty('EMAIL_TERAKHIR')) > 6.5 * 24 * 3600 * 1000) { try { kirimLaporan_(false); } catch (e) { /* abaikan */ } }
-  if (belum) jadwalkanLanjutan_();
-  return { belum: belum };
+  if (sisa() > 30000 && umur_(p.getProperty('DASBOR_WAKTU')) > jam20) coba('Dasbor', function () { var d = hitungDasbor_(); if (!d.ok) throw new Error(d.pesan); });
+  if (umur_(p.getProperty('CADANGAN_WAKTU')) > 6.5 * 24 * 3600 * 1000) coba('Cadangan', function () { return cadangkan_('Sistem'); });
+  if (!belum && umur_(p.getProperty('EMAIL_TERAKHIR')) > 6.5 * 24 * 3600 * 1000) coba('Email', function () { return kirimLaporan_(false); });
+  p.setProperty('GALAT_TERAKHIR', galat.length ? sekarang_() + ' · ' + galat.join(' | ').slice(0, 800) : '');
+  if (belum) { try { jadwalkanLanjutan_(); } catch (e) { /* abaikan */ } }
+  return { belum: belum, galat: galat };
 }
 
 function jalankanDariWeb_(tugas, mulaiBaru, oleh) {
@@ -455,32 +462,90 @@ function simpanStatus_(baris, semuaTarget) {
   tulis_('Status', urut.map(function (id) { return peta[id]; }));
 }
 
-/* ---------- 2. pindai berkas baru (cepat, lewat pencarian Drive) ---------- */
+/* ---------- 2. pindai berkas baru (cepat, lewat pencarian Drive) ----------
+   Cara utama: Drive API v3 (filter createdTime) lewat UrlFetchApp.
+   Cadangan: DriveApp.searchFiles dengan modifiedDate (DriveApp tidak
+   mengenal createdDate), lalu disaring dengan tanggal dibuat. */
 function tugasPindai_(batasMs) {
   var p = props_();
   var t0 = Date.now();
   var akhir = +(p.getProperty('PINDAI_TERAKHIR') || 0);
   var sejak = new Date(akhir ? akhir - 2 * 86400000 : Date.now() - 30 * 86400000);
-  var q = "createdDate > '" + Utilities.formatDate(sejak, 'UTC', "yyyy-MM-dd'T'HH:mm:ss") + "' and trashed = false";
   var akar = daftarAkar_(), tercatat = idTercatat_(), ada = idKotak_(), kecuali = idKecuali_();
-  var cache = {}, baru = [], habis = false;
-  var sumber = [[DriveApp.searchFolders(q), true], [DriveApp.searchFiles(q), false]];
-  for (var s = 0; s < sumber.length && !habis; s++) {
-    var it = sumber[s][0], isFolder = sumber[s][1];
-    while (it.hasNext()) {
+  var cache = {}, baru = [], habis = false, cara = 'v3';
+  var calon;
+  try { calon = cariBaruV3_(sejak, t0, batasMs); }
+  catch (e) { cara = 'driveapp'; calon = null; }
+
+  function periksa(item, induk) {
+    if (tercatat[item.id] || ada[item.id] || kecuali[item.id] || akar[item.id]) return;
+    if (item.mime !== MIME_FOLDER && MIME_LEWATI[item.mime]) return;
+    if (!induk) return;
+    var pos = infoFolder_(induk, akar, cache, kecuali, 0);
+    if (!pos) return;
+    baru.push({
+      id: item.id, nama: item.nama, url: item.url, mime: item.mime,
+      jalur: pos.jalur, leluhur: pos.leluhur.join(','),
+      dibuat: tgl_(item.dibuat), diubah: tgl_(item.diubah), status: 'baru', ditemukan: sekarang_()
+    });
+    ada[item.id] = 1;
+  }
+
+  if (calon) {
+    for (var i = 0; i < calon.length; i++) {
       if (Date.now() - t0 > batasMs) { habis = true; break; }
-      var o = it.next(), id = o.getId();
-      if (tercatat[id] || ada[id] || kecuali[id] || akar[id]) continue;
-      if (!isFolder && MIME_LEWATI[o.getMimeType()]) continue;
-      var pos = posisi_(o, akar, cache, kecuali);
-      if (!pos) continue;
-      baru.push(barisKotak_(o, isFolder, pos, 'baru'));
-      ada[id] = 1;
+      var c = calon[i];
+      if (!c.parents || !c.parents.length) continue;
+      if (tercatat[c.id] || ada[c.id] || kecuali[c.id] || akar[c.id]) continue;
+      var induk = null;
+      try { induk = DriveApp.getFolderById(c.parents[0]); } catch (e) { induk = null; }
+      periksa({
+        id: c.id, nama: c.name, mime: c.mimeType,
+        url: c.webViewLink || (c.mimeType === MIME_FOLDER ? 'https://drive.google.com/drive/folders/' + c.id : 'https://drive.google.com/file/d/' + c.id + '/view'),
+        dibuat: new Date(c.createdTime), diubah: new Date(c.modifiedTime)
+      }, induk);
+    }
+  } else {
+    var q = "modifiedDate > '" + Utilities.formatDate(sejak, 'UTC', "yyyy-MM-dd'T'HH:mm:ss") + "' and trashed = false";
+    var sumber = [[DriveApp.searchFolders(q), true], [DriveApp.searchFiles(q), false]];
+    for (var s = 0; s < sumber.length && !habis; s++) {
+      var it = sumber[s][0], isFolder = sumber[s][1];
+      while (it.hasNext()) {
+        if (Date.now() - t0 > batasMs) { habis = true; break; }
+        var o = it.next();
+        if (o.getDateCreated() < sejak) continue;
+        var ps = o.getParents();
+        periksa({
+          id: o.getId(), nama: o.getName(), url: o.getUrl(),
+          mime: isFolder ? MIME_FOLDER : o.getMimeType(),
+          dibuat: o.getDateCreated(), diubah: o.getLastUpdated()
+        }, ps.hasNext() ? ps.next() : null);
+      }
     }
   }
   if (baru.length) denganKunci_(function () { tambahBaris_('KotakMasuk', baru); });
   if (!habis) p.setProperty('PINDAI_TERAKHIR', String(t0));
-  return { selesai: !habis, ditemukan: baru.length };
+  p.setProperty('PINDAI_CARA', cara);
+  return { selesai: !habis, ditemukan: baru.length, cara: cara };
+}
+
+/* Drive API v3 lewat UrlFetchApp (izin Drive sudah ada dari DriveApp) */
+function cariBaruV3_(sejak, t0, batasMs) {
+  var token = ScriptApp.getOAuthToken();
+  var q = "createdTime > '" + Utilities.formatDate(sejak, 'UTC', "yyyy-MM-dd'T'HH:mm:ss") + "' and trashed = false";
+  var fields = 'nextPageToken,files(id,name,mimeType,parents,createdTime,modifiedTime,webViewLink)';
+  var hasil = [], halaman = '', n = 0;
+  do {
+    var url = 'https://www.googleapis.com/drive/v3/files?pageSize=1000&q=' + encodeURIComponent(q) +
+      '&fields=' + encodeURIComponent(fields) + (halaman ? '&pageToken=' + encodeURIComponent(halaman) : '');
+    var res = UrlFetchApp.fetch(url, { headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) throw new Error('Drive API ' + res.getResponseCode());
+    var j = JSON.parse(res.getContentText());
+    hasil = hasil.concat(j.files || []);
+    halaman = j.nextPageToken || '';
+    n++;
+  } while (halaman && n < 20 && Date.now() - t0 < batasMs);
+  return hasil;
 }
 
 /* ---------- 3. pindai seluruh folder (berkas lama yang belum tercatat) ---------- */
