@@ -9,6 +9,10 @@
 <meta property="og:title" content="SDDS · Satu Data Desa Sumber Sari">
 <meta property="og:description" content="Semua data Desa Sumber Sari di satu tempat, terhubung langsung ke Google Drive.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SDDS">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
@@ -244,16 +248,16 @@
       <div class="guide">
         <ol class="steps">
           <li>
-            <h3>Simpan berkas di folder yang benar</h3>
-            <p>Unggah ke folder Google Drive sesuai kategorinya, misalnya <code>4. Pengumpulan Data / DTSEN</code>. Hindari menyimpan data penting hanya di chat atau folder pribadi.</p>
+            <h3>Unggah lewat SDDS</h3>
+            <p>Klik <b>Edit</b> (ikon pensil) → <b>Unggah</b>, pilih berkas dan kategorinya. Berkas otomatis masuk ke folder Google Drive yang benar dan langsung tercatat, jadi tidak ada yang tercecer di grup chat.</p>
           </li>
           <li>
-            <h3>Salin tautan berbagi</h3>
-            <p>Di Drive: klik kanan berkas → <b>Bagikan</b> → <b>Salin link</b>. Untuk data pribadi warga, pilih <b>Dibatasi</b> agar hanya orang yang diberi izin yang bisa membuka.</p>
+            <h3>Atau tempel link dari Drive</h3>
+            <p>Untuk berkas yang sudah ada di Drive: <b>Edit → Tautan</b>, tempel link-nya. Judul, jenis, tanggal, dan letak folder terisi sendiri. Berkas berisi data pribadi warga diatur <b>Dibatasi</b> di Drive dan diberi label <b>Terbatas</b>.</p>
           </li>
           <li>
-            <h3>Catat di SDDS</h3>
-            <p>Klik tombol <b>Edit</b> (ikon pensil) di kanan atas, lalu <b>Tambah tautan</b>: tempel link, beri judul, pilih kategori, dan <b>Simpan</b>. Link yang salah bisa diganti lewat tombol <b>Ubah</b> di setiap data.</p>
+            <h3>Cek Kotak masuk tiap minggu</h3>
+            <p><b>Kotak masuk</b> menampilkan berkas baru di Drive yang belum dicatat. <b>Perlu perhatian</b> menampilkan tautan rusak dan data yang lewat jadwal. Ringkasannya juga dikirim ke email desa setiap minggu.</p>
           </li>
         </ol>
         <aside class="help">
@@ -270,6 +274,7 @@
   </div>
 
   <div id="view-kategori" hidden></div>
+  <div id="view-statistik" hidden></div>
 </main>
 
 <footer class="footer">
@@ -284,6 +289,8 @@
       <a id="link-web" href="https://sumbersari.klandesa.com/" target="_blank" rel="noopener">Website Desa Sumber Sari</a>
       <a id="link-drive" href="#" target="_blank" rel="noopener">Folder induk Google Drive</a>
       <a href="#katalog">Katalog data</a>
+      <a href="#/statistik">Statistik penduduk</a>
+      <a href="#" id="link-pasang" data-act="pasang">Pasang SDDS di HP</a>
     </div>
     <div class="footer-links">
       <p class="footer-h">Program</p>
@@ -302,7 +309,9 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<script src="assets/js/pwa.js"></script>
 <script src="data/katalog.js"></script>
+<script src="assets/js/dasbor.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/akses.js"></script>
 </body>

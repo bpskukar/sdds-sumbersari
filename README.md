@@ -3,7 +3,7 @@
 Portal katalog data Desa Sumber Sari, Kecamatan Loa Kulu, Kabupaten Kutai Kartanegara.
 Semua tautan Google Drive (DTSEN, RDDK, UMKM, Data RT, Posyandu, profil desa, LKE Desa Cantik, dokumentasi) dicatat di satu tempat supaya tidak hilang atau tercecer.
 
-Situs ini statis (HTML + CSS + JavaScript biasa), tanpa server dan tanpa database, jadi bisa di-hosting gratis di **GitHub Pages**.
+Situs ini statis (HTML + CSS + JavaScript biasa) di **GitHub Pages**. Penyimpanan, unggah berkas, pemeriksaan otomatis, dan dasbor statistik berjalan lewat **Google Apps Script** di spreadsheet database desa — semuanya gratis.
 
 ---
 
@@ -12,12 +12,15 @@ Situs ini statis (HTML + CSS + JavaScript biasa), tanpa server dan tanpa databas
 ```
 index.html            halaman utama
 assets/css/style.css  tampilan (warna, huruf, tata letak)
-assets/js/app.js      logika pencarian, filter, halaman kategori
+assets/js/app.js      pencarian, katalog, mode edit, panel pengelola
+assets/js/dasbor.js   dasbor statistik penduduk
 assets/js/akses.js    halaman masuk perangkat desa
+assets/js/pwa.js      pasang di HP (aplikasi web)
+sw.js, manifest.webmanifest   pendukung aplikasi web (buka cepat & saat sinyal lemah)
 ganti-sandi.html      alat membuat kode akun / ganti kata sandi
-assets/img/           logo & favicon
+assets/img/           logo, favicon, ikon aplikasi
 data/katalog.js       ← pengaturan situs + data cadangan (dipakai bila Google Sheet belum tersambung)
-apps-script/Kode.gs   ← kode Apps Script untuk spreadsheet database (mode edit)
+apps-script/Kode.gs   ← kode Apps Script untuk spreadsheet database (versi 2)
 ```
 
 ## Menayangkan di GitHub Pages
@@ -79,6 +82,23 @@ Setelah login, klik tombol **Edit** (ikon pensil) di kanan atas. Di mode edit:
 - link tiap tahap GSBPM dan **Menu** atas (mis. *Data Sumber Sari*) juga bisa diganti;
 - pencarian, filter, dan jumlah data langsung ikut berubah.
 
+Fitur pengelola (versi 2, butuh Apps Script versi 2):
+
+| Tombol | Gunanya |
+|---|---|
+| **Unggah** | Pilih berkas di HP/laptop (maks. 20 MB per berkas) → tersimpan ke folder Drive sesuai kategori → langsung tercatat. Folder tujuan per kategori diatur di **Ubah kategori → Folder unggahan**. |
+| **Tautan** | Tempel link Drive → judul, jenis, tanggal diubah, dan letak folder terisi otomatis, plus peringatan bila berkas masih bisa dibuka siapa saja. |
+| **Kotak masuk** | Berkas baru di folder DESA CANTIK yang belum dicatat. **Catat** (isian sudah terisi) atau **Abaikan**. **Cari berkas lama** memeriksa seluruh isi folder. |
+| **Perlu perhatian** | Tautan rusak/terhapus, berkas berlabel Terbatas yang ternyata terbuka publik, dan data yang lewat jadwal pembaruan. |
+| **Jadwal pembaruan** | Di setiap data: diperbarui bulanan/triwulan/semester/tahunan + penanggung jawab dan email-nya. Lewat jadwal → label *Perlu diperbarui* + email pengingat mingguan. |
+| **Lainnya → Riwayat, sampah & cadangan** | Siapa mengubah apa; data yang dihapus bisa **dipulihkan 30 hari**; salinan database otomatis tiap minggu (8 terbaru). |
+| **Lainnya → Angka beranda** | Ubah angka luas, penduduk, KK, dll. tanpa GitHub. Bisa mengambil angka dari dasbor. |
+| **Lainnya → Pengaturan otomatis** | Email penerima laporan, folder yang dipantau, folder unggahan bawaan, sumber dasbor. |
+| **Statistik** (menu atas) | Dasbor penduduk dari spreadsheet *DATA SUMBER SARI*: piramida umur, per RT, pendidikan, pekerjaan, BPJS, desil, bansos, kualitas data. |
+| **Pasang SDDS di HP** (kaki halaman) | Ikon SDDS di layar utama HP; daftar data tetap terbuka walau sinyal lemah. |
+
+Tugas otomatis berjalan setiap pagi pukul 06.00: cek semua tautan, pindai berkas baru, hitung ulang dasbor, bersihkan sampah > 30 hari; setiap minggu: cadangkan database dan kirim email laporan/pengingat (hanya bila ada yang perlu ditindaklanjuti).
+
 Perubahan disimpan ke spreadsheet **SDDS – Database Katalog** (folder DESA CANTIK) lewat Google Apps Script,
 jadi langsung terlihat di semua perangkat tanpa mengedit GitHub. Setiap perubahan tercatat di tab **Riwayat**.
 
@@ -99,13 +119,27 @@ Selama website belum tersambung ke spreadsheet, mode edit berjalan sebagai **mod
    klik **Lanjutan** (*Advanced*) → **Buka Proyek tanpa judul (tidak aman)** → **Izinkan** (*Allow*).
    Peringatan ini wajar untuk script buatan sendiri.
 5. Salin **URL aplikasi web** (berakhiran `/exec`). Tempel di `data/katalog.js` bagian `backend: { url: "…" }` → **Commit**.
-6. Buka website → tombol **Edit** → website meminta **Buat kunci editor** → lalu **Impor data awal**. Selesai.
+6. Di editor Apps Script, pilih fungsi **aktifkanOtomatis** di bilah atas → **Jalankan** → izinkan (sama seperti langkah 4).
+7. Buka website → tombol **Edit** → website meminta **Buat kunci editor** → lalu **Impor data awal**. Selesai.
+
+### Memperbarui Apps Script ke versi 2 (bila sudah pernah tersambung)
+
+Tanda perlu diperbarui: di mode edit muncul tombol kuning **Apps Script perlu diperbarui**.
+
+1. Buka spreadsheet **SDDS – Database Katalog** → **Ekstensi → Apps Script**.
+2. Hapus semua isi `Kode.gs`, tempel isi terbaru `apps-script/Kode.gs` (GitHub → **Copy raw file**) → **Simpan**.
+3. Di bilah atas editor, pilih fungsi **aktifkanOtomatis** → **Jalankan** → **Tinjau izin** → pilih akun → **Lanjutan** → **Buka … (tidak aman)** → **Izinkan**.
+   Izin yang diminta: Google Drive (unggah & cek berkas), Gmail (kirim email pengingat), layanan eksternal (cek tautan non-Drive), dan pemicu terjadwal.
+4. **Terapkan → Kelola deployment** → ikon pensil → *Versi*: **Versi baru** → **Terapkan**. URL tetap sama, `katalog.js` tidak perlu diubah.
+5. Muat ulang website. Data lama tetap ada; kolom baru (jadwal, penanggung jawab, folder unggahan) ditambahkan otomatis.
 
 Catatan:
 - Bila isi `Kode.gs` diganti, buat versi baru: **Terapkan → Kelola deployment → pensil → Versi: Versi baru → Terapkan**. URL tetap sama.
 - Lupa kunci editor: Apps Script → **Setelan project** (ikon roda gigi kiri) → **Properti skrip** → hapus `KUNCI_HASH`. Setelah itu kunci baru bisa dibuat lagi dari website.
 - Tab *Kategori* dan *Data* boleh juga diedit langsung di spreadsheet. Baris baru tanpa `id` otomatis diberi id.
-- Membaca daftar tautan tidak butuh kunci (sama seperti `katalog.js`); menyimpan perubahan wajib kunci editor. Isi berkas tetap dilindungi pengaturan berbagi Google Drive.
+- Membaca daftar tautan tidak butuh kunci (sama seperti `katalog.js`); menyimpan, mengunggah, kotak masuk, riwayat, dan menjalankan tugas wajib kunci editor. Isi berkas tetap dilindungi pengaturan berbagi Google Drive.
+- Apps Script berjalan atas nama akun yang memasangnya. Berkas yang diunggah lewat SDDS dimiliki akun itu, jadi sebaiknya dipasang dari akun desa (mis. `desacantikdesasumbersari@gmail.com`) dan akun itu punya izin **Edit** di folder DESA CANTIK.
+- Kotak masuk hanya melihat folder yang dipantau (bawaan: DESA CANTIK). Spreadsheet database dan folder cadangan tidak ikut dipindai.
 
 ## Akun perangkat desa (halaman masuk)
 
@@ -137,6 +171,8 @@ SDDS **hanya menyimpan tautan**, bukan isi berkas. Halaman masuk menyaring pengu
 - Berkas berisi data pribadi (DTSEN desil, RDDK, data per RT, daftar murid, PUS) sebaiknya diatur **Dibatasi** di Drive, bukan "Siapa saja yang memiliki link".
 - Berkas seperti itu diberi label **Terbatas** di situs, lengkap dengan tombol *Minta akses*.
 - Karena repositori GitHub Pages bersifat publik, jangan menulis NIK, nama warga, atau isi data pribadi di `katalog.js`.
+- Dasbor statistik dihitung di Apps Script. Yang dikirim ke browser hanya angka ringkasan — nama, NIK, dan alamat tidak pernah keluar dari spreadsheet. Kategori berisi kurang dari 3 orang digabung ke *Lainnya*.
+- Panel **Perlu perhatian** memperingatkan berkas berlabel Terbatas yang di Drive masih bisa dibuka siapa saja yang punya link.
 
 ## Sumber angka di beranda
 

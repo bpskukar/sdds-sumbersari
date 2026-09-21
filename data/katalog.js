@@ -85,7 +85,7 @@
        berjalan sebagai uji coba di browser masing-masing.
        --------------------------------------------------------------- */
     backend: {
-            url: "https://script.google.com/macros/s/AKfycbyq-ZEcuI-JowbWZn3j8mUyoD5Lf7tbbmtRqsd3VqkcezaKjkkSvO3JEy3EOWmz3XLRlw/exec",
+      url: "https://script.google.com/macros/s/AKfycbyq-ZEcuI-JowbWZn3j8mUyoD5Lf7tbbmtRqsd3VqkcezaKjkkSvO3JEy3EOWmz3XLRlw/exec",
       /* Spreadsheet database (dibuka lewat tombol "Buka Sheet" di mode edit) */
       sheet: "https://docs.google.com/spreadsheets/d/1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg/edit"
     },
@@ -123,6 +123,7 @@
       { id: "rddk", nama: "RDDK", namaPanjang: "Registrasi Data Dasar Keluarga", ikon: "home", warna: "#2F7FC1", sorot: true,
         deskripsi: "Pendataan keluarga dan anggota keluarga di 11 RT, lengkap dengan kuesioner, buku pedoman, dan metadata statistik." },
       { id: "umkm", nama: "UMKM", namaPanjang: "Usaha Mikro, Kecil, dan Menengah", ikon: "store", warna: "#C9821A", sorot: true,
+        folder: F + "1skOzapigvNlMmrc3KqgB1wHmtMMe72JL",
         deskripsi: "Daftar pedagang dan pelaku usaha warga per RT, rancangan output, serta kegiatan pelatihan UMKM." },
       { id: "rt", nama: "Data RT & Penduduk", namaPanjang: "Rekap per Rukun Tetangga", ikon: "map", warna: "#1E9A8A",
         deskripsi: "Berkas data RT 1 sampai RT 11, daftar objek per RT, dan pemutakhiran daftar penduduk." },

@@ -1,0 +1,16 @@
+{
+  "name": "SDDS · Satu Data Desa Sumber Sari",
+  "short_name": "SDDS",
+  "description": "Semua tautan data Desa Sumber Sari di satu tempat, terhubung ke Google Drive.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F3F6F1",
+  "theme_color": "#123F2A",
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
