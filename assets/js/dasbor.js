@@ -68,8 +68,8 @@
 
     var kpi =
       '<div class="kpi-row">' +
-      tile("Penduduk", fA(T), "jiwa", "tercatat di data per orang", "hero") +
-      tile("Kepala keluarga", fA(d.kk), "KK", "rata-rata " + perKk + " jiwa per KK") +
+      tile("Penduduk", fA(T), "jiwa", "tercatat di data per orang", "utama") +
+      tile("Kepala keluarga", fA(d.kk), "KK", "rata-rata " + perKk + " jiwa per KK" + (d.kkDasar === "kepala" ? " · dari kolom hubungan keluarga" : "")) +
       tile("Laki-laki", fA(d.laki), "jiwa", pct(d.laki, T) + " dari penduduk", "", "l") +
       tile("Perempuan", fA(d.perempuan), "jiwa", pct(d.perempuan, T) + " dari penduduk", "", "p") +
       tile("Rasio jenis kelamin", String(rasioJk), "", "laki-laki per 100 perempuan") +
@@ -137,6 +137,8 @@
       ["Orang tercatat ganda", q.nikGanda, "NIK dan nama sama muncul lebih dari sekali (dihitung satu kali)."],
       ["NIK sama, nama berbeda", q.nikBentrok, "Keduanya tetap dihitung. Kemungkinan salah ketik NIK."],
       ["NIK tidak 16 digit", q.nikPanjang, "Periksa penulisan NIK di spreadsheet."],
+      ["NIK tersimpan sebagai angka", q.nikAngka, "Google Sheets hanya menyimpan 15 digit angka, jadi digit ke-16 berubah jadi 0. Ubah kolom ke format Teks lalu perbaiki NIK-nya."],
+      ["Nomor KK tersimpan sebagai angka", q.kkAngka, "Digit terakhir nomor KK bisa berubah jadi 0 sehingga keluarga berbeda terbaca satu KK. Ubah kolom ke format Teks lalu perbaiki nomornya."],
       ["NIK kosong", q.nikKosong, "Baris tanpa NIK tetap dihitung, tetapi tidak bisa dicek ganda."],
       ["Jenis kelamin kosong", q.jkKosong, "Tidak masuk hitungan laki-laki/perempuan."],
       ["Umur tidak terbaca", q.usiaKosong, "Kolom Usia kosong dan tanggal lahir tidak valid."],
