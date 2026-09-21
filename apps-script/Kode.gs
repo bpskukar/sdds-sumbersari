@@ -1391,8 +1391,11 @@ function denganKunci_(fn) {
   try { return fn(); } finally { lock.releaseLock(); }
 }
 
+/* Tidak memakai alert: bila dijalankan dari editor, alert menunggu diklik
+   di tab spreadsheet sampai batas 6 menit habis. Cukup log + toast. */
 function pesan_(t) {
-  try { SpreadsheetApp.getUi().alert(t); } catch (e) { console.log(t); }
+  console.log(t);
+  try { SpreadsheetApp.getActiveSpreadsheet().toast(String(t).slice(0, 250), 'SDDS', 15); } catch (e) { /* abaikan */ }
 }
 
 function pesanGalat_(err) {
