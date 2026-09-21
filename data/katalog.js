@@ -85,7 +85,7 @@
        berjalan sebagai uji coba di browser masing-masing.
        --------------------------------------------------------------- */
     backend: {
-      url: "https://script.google.com/macros/s/AKfycbyq-ZEcuI-JowbWZn3j8mUyoD5Lf7tbbmtRqsd3VqkcezaKjkkSvO3JEy3EOWmz3XLRlw/exec",
+               url: "https://script.google.com/macros/s/AKfycbzow-xaCaRrytIvAFH7GN6imt7nCUVHVOBL9ZFf08D5pokbp5omD6Ja2MPkWt0_n7F1rQ/exec",
       /* Spreadsheet database (dibuka lewat tombol "Buka Sheet" di mode edit) */
       sheet: "https://docs.google.com/spreadsheets/d/1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg/edit"
     },
