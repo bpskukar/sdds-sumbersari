@@ -246,7 +246,8 @@
             var err = new Error((res && res.pesan) || "Gagal menyimpan.");
             err.kode = res && res.kode;
             if (/Aksi tidak dikenal|Pengaturan tidak dikenal/.test(err.message)) err.message = "Kode Apps Script masih versi lama. Perbarui dulu (README → Memperbarui Apps Script).";
-            if (err.kode === "kunci") { kunciMem = ""; simpanLokal(K_KUNCI, null); }
+            if (err.kode === "kunci" || err.kode === "belum-ada-kunci") { kunciMem = ""; simpanLokal(K_KUNCI, null); }
+            if (err.kode === "belum-ada-kunci") db.kunciSiap = false;
             throw err;
           }
           if (payload.aksi !== "cek" && payload.aksi !== "buatKunci") {
@@ -269,7 +270,8 @@
           if (!res || !res.ok) {
             var err = new Error((res && res.pesan) || "Permintaan gagal.");
             err.kode = res && res.kode;
-            if (err.kode === "kunci") { kunciMem = ""; simpanLokal(K_KUNCI, null); }
+            if (err.kode === "kunci" || err.kode === "belum-ada-kunci") { kunciMem = ""; simpanLokal(K_KUNCI, null); }
+            if (err.kode === "belum-ada-kunci") db.kunciSiap = false;
             if (/Aksi tidak dikenal|Pengaturan tidak dikenal/.test(err.message)) err.message = "Kode Apps Script masih versi lama. Perbarui dulu (README → Memperbarui Apps Script).";
             throw err;
           }
@@ -1041,6 +1043,7 @@
       }, function (err) {
         b.disabled = false; b.textContent = label;
         if (err && err.kode === "kunci") { tutupDialog(); toast("Kunci editor salah atau sudah diganti. Masukkan lagi."); dialogKunci(); return; }
+        if (err && err.kode === "belum-ada-kunci") { tutupDialog(); editing = false; renderSemua(); dialogBuatKunci(); return; }
         tampilGalat(form, (err && err.message) || "Gagal menyimpan.");
       });
     }
@@ -1393,8 +1396,9 @@
         else dialogInfoUji(lanjut);
         return;
       }
+      if (!db.kunciSiap) { kunciMem = ""; simpanLokal(K_KUNCI, null); dialogBuatKunci(lanjut); return; }
       if (kunciMem) { nyalakanEdit(); if (lanjut) lanjut(); return; }
-      if (!db.kunciSiap) dialogBuatKunci(lanjut); else dialogKunci(lanjut);
+      dialogKunci(lanjut);
     }
     $("#edit-toggle").addEventListener("click", function () {
       if (editing) { editing = false; renderSemua(); return; }
