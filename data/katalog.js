@@ -150,11 +150,7 @@
       { fase: "Pengumpulan", en: "Collect",
         ket: "Melatih petugas, lalu mendata DTSEN, RDDK, dan UMKM di 11 RT.",
         isi: "materi & daftar hadir pelatihan, hasil dan foto pendataan per kegiatan",
-        tautan: [
-          { label: "4. Pengumpulan Data", url: F + "1q8GymYVpzgWYBeSs6E0C9fM7hO1FHuMk" },
-          { label: "DTSEN", url: F + "1IlADTcEL-G9LkeNynqA3GuA8x0Ffg0rN" },
-          { label: "RDDK", url: F + "1huf7ywJSz2HXn8XPVEgKrLRVFyBAHQf4" }
-        ] },
+        tautan: [ { label: "4. Pengumpulan Data", url: F + "1q8GymYVpzgWYBeSs6E0C9fM7hO1FHuMk" } ] },
       { fase: "Pengolahan", en: "Process",
         ket: "Entri, pemeriksaan, validasi, dan integrasi data.",
         isi: "file entri, hasil validasi & pembersihan data, tabel hasil olahan",
@@ -284,6 +280,9 @@
         url: D + "12byZqbUuej7GNpSY9tHj0QXCJJiozVPv/view", lokasi: P9 + " / 9a.4 Publikasi Mengandung PODES", diperbarui: "2026-07-23" },
       { judul: "Booklet Desa Sumber Sari", kategori: ["publikasi"], jenis: "pdf", unggulan: true,
         url: D + "1AC9XKzUuhm1fA9SYm3Y6jaBBOkBeXrTy/view", lokasi: P9 + " / 9a.3 Booklet Infografis", diperbarui: "2026-08-14" },
+      { judul: "Buku Saku Desa Sumber Sari", kategori: ["publikasi"], jenis: "pdf", unggulan: true,
+        url: D + "1nFqkKZ_d34l351j1S8DaaQobCRZRE-Ew/view", lokasi: "7. Kaltim-Sumber Sari / Desa", diperbarui: "2026-09-09",
+        ket: "Ringkasan data dan potensi Desa Sumber Sari dalam format saku." },
       { judul: "Infografis Desa Sumber Sari", kategori: ["publikasi"], jenis: "gambar", unggulan: true,
         url: D + "1jmDtxeuf-3TshD8OZtt25VATjgYmNSzy/view", lokasi: P9 + " / 9a.3 Booklet Infografis", diperbarui: "2026-07-17" },
       { judul: "Naskah Profil Desa Sumber Sari 2026 (Word)", kategori: ["publikasi"], jenis: "docx",
