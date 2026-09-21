@@ -29,6 +29,8 @@
 /* ---------------- pengaturan dasar ---------------- */
 var SHEET_ID = '1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg';          // spreadsheet database ini
 var DATA_PENDUDUK_ID = '1C4eFqkd-xjLurRsvzEFMxHB_-GAqdSIZ-uN3lFxWFfQ';  // "DATA SUMBER SARI" untuk dasbor
+var DATA_PENDUDUK_GID = 0;                                             // tab "DATA PENDUDUK" (gid=0) — hanya tab ini yang dihitung
+var SKEMA_DASBOR = 2;                                                  // naikkan bila cara hitung berubah (dasbor lama dihitung ulang)
 var FOLDER_INDUK_ID = '1meMzbGUxPfD1aELKz-p-Mz_Sdf6ZCJrj';             // folder DESA CANTIK
 var SITUS_URL = 'https://descansumbersari.github.io/sdds-sumbersari/';
 var EMAIL_DESA = 'desacantikdesasumbersari@gmail.com';
@@ -875,9 +877,12 @@ function bacaLog_() {
 function bacaDasbor_() {
   var simpan = null;
   baca_('Pengaturan').forEach(function (r) { if (r.kunci === 'dasbor') { try { simpan = JSON.parse(r.nilai); } catch (e) { simpan = null; } } });
-  if (!simpan || umur_(props_().getProperty('DASBOR_WAKTU')) > 26 * 3600 * 1000) {
+  // hasil tersimpan hanya dipakai bila cara hitung DAN tautan sumbernya masih sama
+  var tautan = String(bacaPengaturan_().dasborSumber || '').trim();
+  var cocok = !!simpan && simpan.skema === SKEMA_DASBOR && String((simpan.sumber || {}).tautan || '') === tautan;
+  if (!cocok || umur_(props_().getProperty('DASBOR_WAKTU')) > 26 * 3600 * 1000) {
     var baru = hitungDasbor_(200000);
-    if (baru.ok || !simpan) return baru;
+    if (baru.ok || !cocok) return baru;
   }
   return simpan;
 }
@@ -885,17 +890,27 @@ function bacaDasbor_() {
 function hitungDasbor_(batasMs) {
   var t0 = Date.now(), batas = batasMs || 240000;
   var pg = bacaPengaturan_();
-  var id = idDrive_(pg.dasborSumber) || DATA_PENDUDUK_ID;
+  var tautan = String(pg.dasborSumber || '').trim();
+  var id = idDrive_(tautan) || DATA_PENDUDUK_ID;
+  var mg = tautan.match(/[#?&]gid=(\d+)/);
+  var gid = mg ? +mg[1] : (id === DATA_PENDUDUK_ID ? DATA_PENDUDUK_GID : null);
   var src;
   try { src = SpreadsheetApp.openById(id); }
   catch (e) { return { ok: false, pesan: 'Spreadsheet data penduduk tidak bisa dibuka oleh akun pengelola SDDS.' }; }
 
-  var A = { total: 0, L: 0, P: 0, kk: {}, rt: {}, umur: {}, pendidikan: {}, pekerjaan: {}, kawin: {}, agama: {}, bpjs: {}, bansos: {}, desil: {}, usaha: {}, suku: {}, umurList: [],
-    kualitas: { nikKosong: 0, nikGanda: 0, usiaKosong: 0, jkKosong: 0, rtKosong: 0 } };
-  var nikDilihat = {}, tabDipakai = [], tahunIni = new Date().getFullYear();
+  var A = { total: 0, baris: 0, L: 0, P: 0, kk: {}, rt: {}, umur: {}, pendidikan: {}, pekerjaan: {}, kawin: {}, agama: {}, bpjs: {}, bansos: {}, desil: {}, usaha: {}, suku: {}, umurList: [],
+    kualitas: { nikKosong: 0, nikGanda: 0, nikBentrok: 0, nikPanjang: 0, usiaKosong: 0, jkKosong: 0, rtKosong: 0 } };
+  var nikDilihat = {}, orangDilihat = {}, tabDipakai = [], tahunIni = new Date().getFullYear();
 
+  /* Hanya SATU tab yang dihitung: tab dari tautan (gid=…), atau tab pertama yang punya kolom NAMA + JENIS KELAMIN.
+     Menjumlah semua tab membuat orang yang sama terhitung dua kali bila tab lain tidak berisi NIK. */
   var habis = false, lembar = src.getSheets();
-  for (var li = 0; li < lembar.length && !habis; li++) {
+  if (gid != null) {
+    var pilih = lembar.filter(function (s) { return s.getSheetId() === gid; });
+    if (!pilih.length) return { ok: false, pesan: 'Tab data penduduk (gid=' + gid + ') tidak ditemukan di spreadsheet sumber. Tempel ulang tautan tab yang benar di Pengaturan otomatis.' };
+    lembar = pilih;
+  }
+  for (var li = 0; li < lembar.length && !habis && !tabDipakai.length; li++) {
     var sh = lembar[li];
     var nb = sh.getLastRow(), nk = sh.getLastColumn();
     if (nb < 2 || nk < 3) continue;
@@ -921,8 +936,17 @@ function hitungDasbor_(batasMs) {
       var nama = kol.nama > -1 ? String(row[kol.nama]).trim() : '';
       var nik = kol.nik > -1 ? String(row[kol.nik]).replace(/\D/g, '') : '';
       if (!nama && !nik) return;
-      if (nik) { if (nikDilihat[nik]) { A.kualitas.nikGanda++; return; } nikDilihat[nik] = 1; }
-      else A.kualitas.nikKosong++;
+      if (!nik && /^(JUMLAH|TOTAL)\b/i.test(nama)) return;   // baris rekap di bawah tabel
+      A.baris++;
+      if (nik) {
+        /* Ganda = NIK DAN nama sama (orang yang sama dua kali) → dihitung sekali.
+           NIK sama tapi nama beda = kemungkinan salah ketik NIK → keduanya tetap dihitung. */
+        var orang = nik + '|' + nama.toUpperCase().replace(/[^A-Z]/g, '');
+        if (orangDilihat[orang]) { A.kualitas.nikGanda++; return; }
+        orangDilihat[orang] = 1;
+        if (nikDilihat[nik]) A.kualitas.nikBentrok++; else nikDilihat[nik] = 1;
+        if (nik.length !== 16) A.kualitas.nikPanjang++;
+      } else A.kualitas.nikKosong++;
       A.total++;
       var jk = normJk_(kol.jk > -1 ? row[kol.jk] : '');
       if (jk === 'L') A.L++; else if (jk === 'P') A.P++; else A.kualitas.jkKosong++;
@@ -952,7 +976,7 @@ function hitungDasbor_(batasMs) {
         if (ds && +ds >= 1 && +ds <= 10) A.desil[+ds] = (A.desil[+ds] || 0) + 1;
       }
   }
-  if (!A.total) return { ok: false, pesan: 'Tidak menemukan tabel penduduk (kolom NAMA dan JENIS KELAMIN) di spreadsheet sumber.' };
+  if (!A.total) return { ok: false, pesan: gid != null ? 'Tab data penduduk tidak punya baris dengan kolom NAMA dan JENIS KELAMIN.' : 'Tidak menemukan tabel penduduk (kolom NAMA dan JENIS KELAMIN) di spreadsheet sumber.' };
 
   var kelompok = [];
   for (var g = 0; g <= 15; g++) {
@@ -970,7 +994,8 @@ function hitungDasbor_(batasMs) {
 
   var hasil = {
     ok: true,
-    sumber: { nama: src.getName(), tab: tabDipakai },
+    skema: SKEMA_DASBOR,
+    sumber: { nama: src.getName(), tab: tabDipakai, baris: A.baris, tautan: tautan },
     diperbarui: sekarang_(),
     total: A.total, laki: A.L, perempuan: A.P, kk: Object.keys(A.kk).length,
     anak: anak, produktif: produktif, lansia: lansia, medianUmur: median,
