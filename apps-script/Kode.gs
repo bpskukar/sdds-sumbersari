@@ -101,19 +101,19 @@ function aktifkanOtomatis() {
   p.setProperty('OTOMATIS', sekarang_());
   if (!p.getProperty('EMAIL_TERAKHIR')) p.setProperty('EMAIL_TERAKHIR', String(Date.now()));
   sheet_('Status'); sheet_('KotakMasuk'); sheet_('Sampah');
-  var r = jalankanSemua_(4 * 60 * 1000);
+  /* pemeriksaan pertama berjalan di latar belakang (batas 6 menit per jalan) */
+  ScriptApp.newTrigger('lanjutkanTugas').timeBased().after(60 * 1000).create();
   pesan_('Fitur otomatis SDDS aktif.\n\n' +
     '• Tautan diperiksa setiap hari pukul 06.00\n' +
     '• Berkas baru di Drive masuk Kotak masuk\n' +
     '• Database dicadangkan setiap minggu\n' +
     '• Email pengingat dikirim setiap minggu\n\n' +
-    'Pemeriksaan pertama: ' + (r.belum ? 'masih berlanjut beberapa menit lagi.' : 'selesai.') +
-    (r.galat.length ? '\n\nCatatan: ' + r.galat.join('\n') : '') +
-    '\n\nLangkah berikutnya: Terapkan → Kelola deployment → pensil → Versi baru → Terapkan.');
+    'Pemeriksaan pertama mulai sekitar 1 menit lagi di latar belakang (±5–15 menit, bertahap).\n\n' +
+    'Langkah berikutnya: Terapkan → Kelola deployment → pensil → Versi baru → Terapkan.');
 }
 
 function cadangkanSekarang() { var r = cadangkan_('Admin'); pesan_('Cadangan dibuat:\n' + r.nama); }
-function hitungDasborSekarang() { var r = hitungDasbor_(); pesan_(r.ok ? 'Dasbor dihitung ulang: ' + r.total + ' penduduk.' : r.pesan); }
+function hitungDasborSekarang() { var r = hitungDasbor_(300000); pesan_(r.ok ? 'Dasbor dihitung ulang: ' + r.total + ' penduduk.' : r.pesan); }
 
 /* =====================================================================
    WEB APP
@@ -347,33 +347,44 @@ function unggah_(b, oleh) {
 /* =====================================================================
    TUGAS OTOMATIS (pemicu harian + tombol di website)
    ===================================================================== */
-function tugasHarian() { jalankanSemua_(5 * 60 * 1000 - 20000); }
+function tugasHarian() { jalankanSemua_(260000); }
 
 function lanjutkanTugas() {
   hapusPemicu_('lanjutkanTugas');
-  jalankanSemua_(5 * 60 * 1000 - 20000);
+  jalankanSemua_(260000);
 }
 
+/* Menjalankan tugas berurutan dengan batas waktu ketat. Yang belum selesai
+   dilanjutkan otomatis oleh pemicu 2 menit kemudian. */
 function jalankanSemua_(batasMs) {
   var mulai = Date.now();
   function sisa() { return batasMs - (Date.now() - mulai); }
-  var p = props_(), belum = false, r;
-  var jam20 = 20 * 3600 * 1000;
-
+  var p = props_(), belum = false;
+  var jam20 = 20 * 3600 * 1000, minggu = 6.5 * 24 * 3600 * 1000;
   var galat = [];
   function coba(nama, fn) {
     try { var h = fn(); if (h && h.selesai === false) belum = true; }
     catch (e) { galat.push(nama + ': ' + String(e && e.message || e)); }
   }
   if (+(p.getProperty('CEK_I') || 0) > 0 || umur_(p.getProperty('CEK_WAKTU')) > jam20) {
-    coba('Cek tautan', function () { return tugasCek_(Math.max(sisa() * 0.45, 20000), false); });
+    coba('Cek tautan', function () { return tugasCek_(Math.min(sisa() * 0.35, 90000), false); });
   }
-  if (sisa() > 30000) coba('Pindai berkas baru', function () { return tugasPindai_(Math.min(sisa() * 0.5, 90000)); });
-  if (p.getProperty('PENUH_JALAN') === '1' && sisa() > 40000) coba('Pindai seluruh folder', function () { return tugasPindaiPenuh_(sisa() - 30000, false); });
+  if (sisa() > 40000) coba('Pindai berkas baru', function () { return tugasPindai_(Math.min(sisa() * 0.35, 60000)); });
+  else belum = true;
+  if (p.getProperty('PENUH_JALAN') === '1') {
+    if (sisa() > 60000) coba('Pindai seluruh folder', function () { return tugasPindaiPenuh_(sisa() - 50000, false); });
+    else belum = true;
+  }
   try { bersihkanSampah_(); } catch (e) { /* abaikan */ }
-  if (sisa() > 30000 && umur_(p.getProperty('DASBOR_WAKTU')) > jam20) coba('Dasbor', function () { var d = hitungDasbor_(); if (!d.ok) throw new Error(d.pesan); });
-  if (umur_(p.getProperty('CADANGAN_WAKTU')) > 6.5 * 24 * 3600 * 1000) coba('Cadangan', function () { return cadangkan_('Sistem'); });
-  if (!belum && umur_(p.getProperty('EMAIL_TERAKHIR')) > 6.5 * 24 * 3600 * 1000) coba('Email', function () { return kirimLaporan_(false); });
+  if (umur_(p.getProperty('DASBOR_WAKTU')) > jam20) {
+    if (sisa() > 120000) coba('Dasbor', function () { var d = hitungDasbor_(sisa() - 40000); if (!d.ok) { if (d.waktuHabis) return { selesai: false }; throw new Error(d.pesan); } });
+    else belum = true;
+  }
+  if (umur_(p.getProperty('CADANGAN_WAKTU')) > minggu) {
+    if (sisa() > 40000) coba('Cadangan', function () { return cadangkan_('Sistem'); });
+    else belum = true;
+  }
+  if (!belum && umur_(p.getProperty('EMAIL_TERAKHIR')) > minggu && sisa() > 20000) coba('Email', function () { return kirimLaporan_(false); });
   p.setProperty('GALAT_TERAKHIR', galat.length ? sekarang_() + ' · ' + galat.join(' | ').slice(0, 800) : '');
   if (belum) { try { jadwalkanLanjutan_(); } catch (e) { /* abaikan */ } }
   return { belum: belum, galat: galat };
@@ -385,7 +396,7 @@ function jalankanDariWeb_(tugas, mulaiBaru, oleh) {
   else if (tugas === 'pindai') r = tugasPindai_(batas);
   else if (tugas === 'pindaiPenuh') r = tugasPindaiPenuh_(batas, mulaiBaru);
   else if (tugas === 'cadangan') r = cadangkan_(oleh);
-  else if (tugas === 'dasbor') { r = hitungDasbor_(); if (!r.ok) throw new Error(r.pesan); r = { selesai: true, total: r.total }; }
+  else if (tugas === 'dasbor') { r = hitungDasbor_(240000); if (!r.ok) throw new Error(r.pesan); r = { selesai: true, total: r.total }; }
   else if (tugas === 'email') r = kirimLaporan_(true);
   else throw new Error('Tugas tidak dikenal.');
   var hasil = { ok: true, tugas: tugas, selesai: r.selesai !== false, progres: r };
@@ -404,7 +415,7 @@ function tugasCek_(batasMs, mulaiBaru) {
   var target = daftarTarget_();
   if (i >= target.length) i = 0;
   var t0 = Date.now(), hasil = [];
-  while (i < target.length && Date.now() - t0 < batasMs) { hasil.push(cekSatu_(target[i])); i++; }
+  while (i < target.length && Date.now() - t0 < batasMs) { hasil.push(cekSatu_(target[i], t0 + batasMs + 15000)); i++; }
   var selesai = i >= target.length;
   denganKunci_(function () { simpanStatus_(hasil, selesai ? target : null); });
   if (selesai) {
@@ -425,7 +436,7 @@ function daftarTarget_() {
   return t;
 }
 
-function cekSatu_(t) {
+function cekSatu_(t, tenggat) {
   var hasil = { id: t.id, cek: 'ok', pesan: '', diubahDrive: '', akses: '', dicek: sekarang_() };
   var url = String(t.url || '').trim();
   if (!/^https?:\/\//i.test(url)) { hasil.cek = 'rusak'; hasil.pesan = 'Link tidak lengkap (harus diawali https://).'; return hasil; }
@@ -435,7 +446,7 @@ function cekSatu_(t) {
     if (!r) { hasil.cek = 'hilang'; hasil.pesan = 'Tidak ditemukan di Drive, atau akun pengelola tidak punya akses.'; return hasil; }
     try {
       if (r.obj.isTrashed()) { hasil.cek = 'dihapus'; hasil.pesan = 'Berkas ada di sampah Google Drive.'; }
-      hasil.diubahDrive = tgl_(terakhirDiubah_(r.obj, r.folder));
+      hasil.diubahDrive = tgl_(terakhirDiubah_(r.obj, r.folder, tenggat));
       hasil.akses = aksesTeks_(r.obj);
     } catch (e) { hasil.pesan = 'Sebagian info tidak terbaca.'; }
     return hasil;
@@ -497,8 +508,9 @@ function tugasPindai_(batasMs) {
       var c = calon[i];
       if (!c.parents || !c.parents.length) continue;
       if (tercatat[c.id] || ada[c.id] || kecuali[c.id] || akar[c.id]) continue;
-      var induk = null;
-      try { induk = DriveApp.getFolderById(c.parents[0]); } catch (e) { induk = null; }
+      var pid = c.parents[0], induk = null;
+      if (cache.hasOwnProperty(pid) && !cache[pid]) continue;
+      try { induk = DriveApp.getFolderById(pid); } catch (e) { cache[pid] = null; continue; }
       periksa({
         id: c.id, nama: c.name, mime: c.mimeType,
         url: c.webViewLink || (c.mimeType === MIME_FOLDER ? 'https://drive.google.com/drive/folders/' + c.id : 'https://drive.google.com/file/d/' + c.id + '/view'),
@@ -864,13 +876,14 @@ function bacaDasbor_() {
   var simpan = null;
   baca_('Pengaturan').forEach(function (r) { if (r.kunci === 'dasbor') { try { simpan = JSON.parse(r.nilai); } catch (e) { simpan = null; } } });
   if (!simpan || umur_(props_().getProperty('DASBOR_WAKTU')) > 26 * 3600 * 1000) {
-    var baru = hitungDasbor_();
+    var baru = hitungDasbor_(200000);
     if (baru.ok || !simpan) return baru;
   }
   return simpan;
 }
 
-function hitungDasbor_() {
+function hitungDasbor_(batasMs) {
+  var t0 = Date.now(), batas = batasMs || 240000;
   var pg = bacaPengaturan_();
   var id = idDrive_(pg.dasborSumber) || DATA_PENDUDUK_ID;
   var src;
@@ -881,23 +894,34 @@ function hitungDasbor_() {
     kualitas: { nikKosong: 0, nikGanda: 0, usiaKosong: 0, jkKosong: 0, rtKosong: 0 } };
   var nikDilihat = {}, tabDipakai = [], tahunIni = new Date().getFullYear();
 
-  src.getSheets().forEach(function (sh) {
+  var habis = false, lembar = src.getSheets();
+  for (var li = 0; li < lembar.length && !habis; li++) {
+    var sh = lembar[li];
     var nb = sh.getLastRow(), nk = sh.getLastColumn();
-    if (nb < 2 || nk < 3) return;
-    var v = sh.getRange(1, 1, nb, nk).getValues();
+    if (nb < 2 || nk < 3) continue;
+    var kepala = sh.getRange(1, 1, Math.min(15, nb), Math.min(nk, 80)).getValues();
     var h = -1, kol = null;
-    for (var r = 0; r < Math.min(15, v.length); r++) {
-      var m = petaKolom_(v[r]);
+    for (var r = 0; r < kepala.length; r++) {
+      var m = petaKolom_(kepala[r]);
       if (m.nama > -1 && m.jk > -1) { h = r; kol = m; break; }
     }
-    if (h < 0) return;
+    if (h < 0) continue;
     tabDipakai.push(sh.getName());
-    for (var i = h + 1; i < v.length; i++) {
-      var row = v[i];
+    var lebar = 1;
+    for (var kk0 in kol) if (kol.hasOwnProperty(kk0) && kol[kk0] + 1 > lebar) lebar = kol[kk0] + 1;
+    for (var r0 = h + 2; r0 <= nb; r0 += 3000) {
+      if (Date.now() - t0 > batas) { habis = true; break; }
+      var v = sh.getRange(r0, 1, Math.min(3000, nb - r0 + 1), lebar).getValues();
+      for (var i = 0; i < v.length; i++) tambahBaris(v[i]);
+    }
+  }
+  if (habis) return { ok: false, waktuHabis: true, pesan: 'Waktu habis saat menghitung dasbor (data sangat besar). Akan dicoba lagi otomatis.' };
+
+  function tambahBaris(row) {
       var nama = kol.nama > -1 ? String(row[kol.nama]).trim() : '';
       var nik = kol.nik > -1 ? String(row[kol.nik]).replace(/\D/g, '') : '';
-      if (!nama && !nik) continue;
-      if (nik) { if (nikDilihat[nik]) { A.kualitas.nikGanda++; continue; } nikDilihat[nik] = 1; }
+      if (!nama && !nik) return;
+      if (nik) { if (nikDilihat[nik]) { A.kualitas.nikGanda++; return; } nikDilihat[nik] = 1; }
       else A.kualitas.nikKosong++;
       A.total++;
       var jk = normJk_(kol.jk > -1 ? row[kol.jk] : '');
@@ -927,8 +951,7 @@ function hitungDasbor_() {
         var ds = String(row[kol.desil]).replace(/\D/g, '');
         if (ds && +ds >= 1 && +ds <= 10) A.desil[+ds] = (A.desil[+ds] || 0) + 1;
       }
-    }
-  });
+  }
   if (!A.total) return { ok: false, pesan: 'Tidak menemukan tabel penduduk (kolom NAMA dan JENIS KELAMIN) di spreadsheet sumber.' };
 
   var kelompok = [];
@@ -1109,17 +1132,18 @@ function jalurFolder_(folder) {
   return nama.join(' / ');
 }
 
-function terakhirDiubah_(obj, isFolder) {
+function terakhirDiubah_(obj, isFolder, tenggat) {
   var t = obj.getLastUpdated();
   if (!isFolder) return t;
+  var batas = tenggat || (Date.now() + 20000);
   var n = 0, antri = [{ f: obj, d: 0 }];
-  while (antri.length && n < 300) {
+  while (antri.length && n < 150 && Date.now() < batas) {
     var x = antri.shift();
     var fs = x.f.getFiles();
-    while (fs.hasNext() && n < 300) { var f = fs.next(); n++; var u = f.getLastUpdated(); if (u > t) t = u; }
+    while (fs.hasNext() && n < 150 && Date.now() < batas) { var f = fs.next(); n++; var u = f.getLastUpdated(); if (u > t) t = u; }
     if (x.d < 1) {
       var ds = x.f.getFolders();
-      while (ds.hasNext() && n < 300) { var s = ds.next(); n++; var u2 = s.getLastUpdated(); if (u2 > t) t = u2; antri.push({ f: s, d: x.d + 1 }); }
+      while (ds.hasNext() && n < 150 && Date.now() < batas) { var s = ds.next(); n++; var u2 = s.getLastUpdated(); if (u2 > t) t = u2; antri.push({ f: s, d: x.d + 1 }); }
     }
   }
   return t;
