@@ -101,7 +101,11 @@ SDDS **hanya menyimpan tautan**, bukan isi berkas. Halaman masuk menyaring pengu
 
 ## Sumber angka di beranda
 
-Profil Desa Sumber Sari 2026 (isian November 2025) dan List RT Desa Cantik 2026.
+- Luas wilayah, jumlah penduduk, jumlah KK, dan kepadatan: Portal Data Publik Desa Sumber Sari (sumbersari.klandesa.com, diperbarui Juli 2026). Samakan lagi di bagian `statistik` bila portal desa diperbarui.
+- Jumlah RT dan dusun: Profil Desa Sumber Sari 2026.
+- Pelaku usaha: pendataan UMKM Desa Cantik 2026 (List RT).
+
+Bagian *Alur Data* mengikuti 8 tahap GSBPM (Generic Statistical Business Process Model) v5.1 dan diatur di bagian `alur` pada `data/katalog.js`.
 
 ---
 

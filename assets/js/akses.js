@@ -72,7 +72,7 @@
       '<p class="gen-lbl">Kode akun — tempel di <code>data/katalog.js</code> bagian <code>akun: [ ]</code></p>' +
       '<pre class="gen-code" tabindex="0"></pre>' +
       '<button class="btn gen-copy" type="button">Salin kode</button>' +
-      '<ol class="gen-steps"><li>Buka repositori di GitHub → <code>data/katalog.js</code> → ikon pensil.</li><li>Tempel kode di antara <code>akun: [</code> dan <code>]</code>.</li><li>Commit. Dalam ±1 menit situs meminta login dengan email/ID dan kata sandi tadi.</li></ol>' +
+      '<ol class="gen-steps"><li>Buka repositori di GitHub → <code>data/katalog.js</code> → ikon pensil.</li><li>Cari tulisan <code>tempel kode akun di sini</code>, lalu tempel kode tepat di atasnya.</li><li>Commit. Dalam ±1 menit situs meminta login dengan email/ID dan kata sandi tadi.</li></ol>' +
       '</div>';
 
     var form = $(".gen", el), err = $(".gate-err", el), out = $(".gen-out", el), code = $(".gen-code", el), btn = $(".gate-btn", el);

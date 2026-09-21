@@ -40,6 +40,7 @@
     x: '<path d="M18 6 6 18M6 6l12 12"/>',
     calendar: '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
     link: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+    cycle: '<path d="M21 12a9 9 0 0 1-15.4 6.4L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.4-6.4L21 8"/><path d="M21 3v5h-5"/>',
     logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
     grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>'
   };
@@ -300,20 +301,28 @@
 
   /* ---------- alur ---------- */
   function renderFlow() {
-    $("#flow").innerHTML = (S.alur || []).map(function (a) {
+    var alur = S.alur || [];
+    $("#flow").innerHTML = alur.map(function (a) {
+      var links = (a.tautan || (a.url ? [{ label: "Buka folder", kode: a.kode, url: a.url }] : []));
       return (
-        '<li><a class="flow-card" href="' + esc(a.url) + '" target="_blank" rel="noopener">' +
-        '<span class="flow-num" aria-hidden="true"></span>' +
-        "<h3>" + esc(a.langkah) + "</h3>" +
-        '<p class="code">' + esc(a.kode) + "</p>" +
-        "<p>" + esc(a.ket) + "</p>" +
-        '<span class="open">Buka folder ' + ic("external") + "</span></a></li>"
+        '<li class="flow-card">' +
+        '<div class="flow-head"><span class="flow-num" aria-hidden="true"></span>' +
+        '<div><h3>' + esc(a.fase || a.langkah) + "</h3>" +
+        (a.en ? '<p class="code">' + esc(a.en) + "</p>" : "") + "</div></div>" +
+        '<p class="flow-ket">' + esc(a.ket) + "</p>" +
+        (a.isi ? '<p class="flow-isi"><b>Isi folder:</b> ' + esc(a.isi) + "</p>" : "") +
+        '<ul class="flow-links">' + links.map(function (t) {
+          return '<li><a href="' + esc(t.url) + '" target="_blank" rel="noopener">' + ic("folder") +
+            '<span class="lbl">' + esc(t.label) + "</span>" +
+            (t.kode ? '<span class="k">' + esc(t.kode) + "</span>" : "") + "</a></li>";
+        }).join("") + "</ul></li>"
       );
     }).join("");
-    var sup = S.alurPendukung || [];
-    $("#flow-support").innerHTML = sup.length ? '<span class="lbl">Butir pendukung:</span>' + sup.map(function (p) {
-      return '<a class="pill" href="' + esc(p.url) + '" target="_blank" rel="noopener"><span class="k">' + esc(p.kode) + "</span>" + esc(p.nama) + "</a>";
-    }).join("") : "";
+    $("#flow-support").innerHTML = alur.length > 1
+      ? '<span class="cycle">' + ic("cycle") + "</span><p>Hasil <b>" + esc(alur[alur.length - 1].fase || "") + "</b> menjadi masukan <b>" + esc(alur[0].fase || "") + "</b> pada siklus berikutnya." +
+        (S.alurRujukan ? ' <span class="ref">Rujukan: ' + esc(S.alurRujukan) + ".</span>" : "") + "</p>" +
+        (S.alurFolder ? '<a class="btn ghost sm" href="' + esc(S.alurFolder) + '" target="_blank" rel="noopener">' + ic("folder") + "Semua folder tahap</a>" : "")
+      : "";
   }
 
   /* ---------- katalog ---------- */

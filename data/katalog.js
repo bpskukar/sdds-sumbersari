@@ -82,15 +82,17 @@
       email: "desacantikdesasumbersari@gmail.com"
     },
 
-    /* Angka ringkas di bawah banner. Sumber dicantumkan di statistikSumber. */
+    /* Angka ringkas di bawah banner. Penduduk, KK, luas, dan kepadatan
+       disamakan dengan Portal Data Publik sumbersari.klandesa.com.
+       Perbarui bila angka di portal desa berubah. */
     statistik: [
-      { label: "Luas wilayah", nilai: "1.416", satuan: "ha", ket: "319 ha sawah tadah hujan" },
-      { label: "Penduduk", nilai: "3.593", satuan: "jiwa", ket: "1.864 laki-laki · 1.729 perempuan" },
-      { label: "Kepala keluarga", nilai: "1.165", satuan: "KK", ket: "naik 14 KK dari tahun lalu" },
+      { label: "Luas wilayah", nilai: "1.416", satuan: "ha", ket: "kepadatan 252,68 jiwa/km²" },
+      { label: "Penduduk", nilai: "3.578", satuan: "jiwa", ket: "data kependudukan Juli 2026" },
+      { label: "Kepala keluarga", nilai: "1.172", satuan: "KK", ket: "rata-rata 3,05 jiwa per KK" },
       { label: "Wilayah", nilai: "11", satuan: "RT", ket: "tersebar di 2 dusun" },
-      { label: "Pelaku usaha", nilai: "102", satuan: "UMKM", ket: "pedagang & usaha warga tercatat" }
+      { label: "Pelaku usaha", nilai: "163", satuan: "UMKM", ket: "hasil pendataan UMKM Desa Cantik 2026" }
     ],
-    statistikSumber: "Profil Desa Sumber Sari 2026 (isian Nov 2025) dan List RT Desa Cantik 2026.",
+    statistikSumber: "Portal Data Publik Desa Sumber Sari (sumbersari.klandesa.com, diperbarui Juli 2026) untuk luas, penduduk, KK, dan kepadatan; Profil Desa 2026 untuk jumlah RT/dusun; pendataan UMKM Desa Cantik 2026 untuk pelaku usaha.",
 
     /* ---------------------------------------------------------------
        KATEGORI — id dipakai di kolom kategori pada DATA.
@@ -117,26 +119,58 @@
       { id: "kelembagaan", nama: "Kelembagaan & SK", namaPanjang: "Agen statistik dan perangkat", ikon: "landmark", warna: "#4B6A88",
         deskripsi: "SK agen statistik, perangkat desa, PPID, serta catatan kegiatan agen statistik." },
       { id: "lke", nama: "LKE Desa Cantik", namaPanjang: "Lembar Kerja Evaluasi", ikon: "layers", warna: "#3F8F3A",
-        deskripsi: "Bukti dukung evaluasi Desa Cantik: Tata Kelola, Kapasitas Statistik, dan Manajemen Data." },
+        deskripsi: "Bukti dukung evaluasi Desa Cantik (Tata Kelola, Kapasitas Statistik, Manajemen Data) dan folder 8 tahap GSBPM." },
       { id: "dokumentasi", nama: "Dokumentasi", namaPanjang: "Foto dan video kegiatan", ikon: "camera", warna: "#B8612E",
         deskripsi: "Foto dan video kegiatan Desa Cantik Sumber Sari sepanjang 2026, dari pencanangan hingga pendataan." },
       { id: "arsip", nama: "Arsip Tim", namaPanjang: "Folder kerja anggota tim", ikon: "archive", warna: "#737D78",
         deskripsi: "Folder kerja anggota tim yang isinya belum dipilah ke kategori. Pindahkan ke kategori yang tepat bila sempat." }
     ],
 
-    /* Alur kerja data desa, mengikuti butir LKE Desa Cantik */
+    /* ---------------------------------------------------------------
+       ALUR DATA — 8 tahap GSBPM (Generic Statistical Business Process
+       Model) v5.1 yang dipakai BPS. Setiap tahap tertaut ke foldernya di
+       Google Drive: DESA CANTIK / Kegiatan Statistik Sumber Sari.
+       "isi" = petunjuk berkas apa yang diunggah ke folder tersebut.
+       --------------------------------------------------------------- */
+    alurRujukan: "Generic Statistical Business Process Model (GSBPM) v5.1",
+    alurFolder: F + "1auwvaZa6fjIYvg1_MnGNtZmEe8WME6Iv",
     alur: [
-      { langkah: "Identifikasi", kode: "LKE 6", ket: "Menentukan data apa saja yang dibutuhkan desa.", url: F + "1lZB2RYbPqY7-BekoyYhc6HeSWysvjHSD" },
-      { langkah: "Pengumpulan", kode: "LKE 7", ket: "Kuesioner, pedoman, pelatihan petugas, dan hasil pendataan.", url: F + "1ReTYxe56qRKBE0bANlEtLwRlROG2qk2H" },
-      { langkah: "Pengolahan", kode: "LKE 8", ket: "Entri, validasi, dan pemutakhiran daftar penduduk.", url: F + "1L-bPcr5PhK27JrAOETkKg4ZoWnJX_jVN" },
-      { langkah: "Penyajian", kode: "LKE 9", ket: "Monografi, profil desa, booklet, infografis, website.", url: F + "1qrNOhK5AfmMapafoJoMxKOuJX2MiX6l9" },
-      { langkah: "Pemutakhiran", kode: "LKE 13", ket: "Pembaruan rutin dari Posyandu, KPM, PPKBD, dan sekolah.", url: F + "1KHxtYqoEPuaN7yk75C9ZCULxPiqdJHSb" }
-    ],
-    alurPendukung: [
-      { nama: "Ketersediaan Data", kode: "10a", url: F + "1joQ5aUOXQxtJthESlv3I53F4db9j2km1" },
-      { nama: "Kualitas Data", kode: "11", url: F + "1qCwdjnSDsUjWFiviKGEuZT5LWhApbhrj" },
-      { nama: "Akses Data", kode: "12", url: F + "1P2iYKSAK3jpQfuhCdavkdci6TwoWBF-a" },
-      { nama: "Kebermanfaatan", kode: "14", url: F + "1rVXJSMCA_kIsjUICa1VrHjnK7uffqLM4" }
+      { fase: "Spesifikasi Kebutuhan", en: "Specify Needs",
+        ket: "Mengenali kebutuhan data desa bersama pengguna dan mengecek data yang sudah tersedia.",
+        isi: "instrumen identifikasi kebutuhan, notulen & daftar hadir konsultasi, daftar ketersediaan data",
+        tautan: [ { label: "1. Spesifikasi Kebutuhan", url: F + "1wOr8oyPfXxK6K3tMt84ewO_0hv5FzALs" } ] },
+      { fase: "Desain", en: "Design",
+        ket: "Merancang tabel output, variabel dan konsep-definisi, kuesioner, serta metode pengumpulan.",
+        isi: "rancangan output, rancangan kuesioner, metadata & konsep-definisi",
+        tautan: [ { label: "2. Desain", url: F + "1VX8LsiXZl4ntrZKW9yX4NHQvz6Vfdax8" } ] },
+      { fase: "Membangun", en: "Build",
+        ket: "Menyiapkan kuesioner final, buku pedoman, SOP, dan uji coba instrumen.",
+        isi: "kuesioner final, buku pedoman, SOP kegiatan, hasil uji coba",
+        tautan: [ { label: "3. Membangun", url: F + "1tGRss8TNp7p0al-gbHJRWhywZAd0NkX9" } ] },
+      { fase: "Pengumpulan", en: "Collect",
+        ket: "Melatih petugas, lalu mendata DTSEN, RDDK, dan UMKM di 11 RT.",
+        isi: "materi & daftar hadir pelatihan, hasil dan foto pendataan per kegiatan",
+        tautan: [
+          { label: "4. Pengumpulan Data", url: F + "1q8GymYVpzgWYBeSs6E0C9fM7hO1FHuMk" },
+          { label: "DTSEN", url: F + "1IlADTcEL-G9LkeNynqA3GuA8x0Ffg0rN" },
+          { label: "RDDK", url: F + "1huf7ywJSz2HXn8XPVEgKrLRVFyBAHQf4" }
+        ] },
+      { fase: "Pengolahan", en: "Process",
+        ket: "Entri, pemeriksaan, validasi, dan integrasi data.",
+        isi: "file entri, hasil validasi & pembersihan data, tabel hasil olahan",
+        tautan: [ { label: "5. Pengolahan Data", url: F + "18RAD_OylVJxOhIX7Lwyhzt-f8HQRyO-N" } ] },
+      { fase: "Analisis", en: "Analyse",
+        ket: "Menyusun tabel dan grafik, memeriksa konsistensi, lalu menafsirkan hasil.",
+        isi: "draf tabel & grafik, catatan analisis, hasil pemeriksaan kualitas",
+        tautan: [ { label: "6. Analisis", url: F + "1tcp9ETRU1GH6Ftmc3ST-XFD2H6UFTm9d" } ] },
+      { fase: "Diseminasi", en: "Disseminate",
+        ket: "Menyajikan hasil lewat monografi, profil desa, booklet, infografis, dan website.",
+        isi: "publikasi final, infografis, bukti tayang di website atau papan informasi",
+        tautan: [ { label: "7. Diseminasi", url: F + "1JwdlAnDTH4wUTxXEb8Q3wDooEz4nIAGK" } ] },
+      { fase: "Evaluasi", en: "Evaluate",
+        ket: "Menilai proses dan kebermanfaatan data sebagai bahan perbaikan siklus berikutnya.",
+        isi: "notulen evaluasi, catatan kendala & rekomendasi, bukti pemanfaatan data",
+        tautan: [ { label: "8. Evaluasi", url: F + "1LM72Y0I9ZWeDOOlhl7A4fO85I3rjxGl5" } ] }
     ],
 
     /* ===============================================================
@@ -193,7 +227,7 @@
         ket: "Rekap pelaku usaha mikro dan kecil hasil pendataan." },
       { judul: "List RT — objek pendataan & pelaku usaha per RT", kategori: ["umkm", "rt"], jenis: "sheet", terbatas: true,
         url: "https://docs.google.com/spreadsheets/d/1aEiHL_TDpAmh2_6VzqeHi3h06un_tnhC_a7XSDPDqUE/edit", lokasi: ROOT + " / Data RT", diperbarui: "2026-07-17",
-        ket: "Pembagian objek per RT (kependudukan, pertanian, perikanan, wisata, ekonomi, fasilitas umum) dan daftar 102 pedagang." },
+        ket: "Pembagian objek per RT (kependudukan, pertanian, perikanan, wisata, ekonomi, fasilitas umum) dan daftar pedagang per RT." },
       { judul: "Pelatihan UMKM", kategori: ["umkm", "dokumentasi"], jenis: "folder",
         url: F + "1VaFLax0YZ3QitcNRp2kJADEDwpAXKMnq", lokasi: P7 + " / 7a.5 Pelatihan/Briefing Petugas", diperbarui: "2026-07-25" },
 
@@ -314,8 +348,17 @@
         url: D + "1pyb36-KvN_uPeSHgAKAwgyuE3nvRAaRC/view", lokasi: TK + " / 3. Agen/Komunitas Statistik", diperbarui: "2026-08-14" },
       { judul: "LKE bukti dukung 14.a.2 — kebermanfaatan data", kategori: ["lke"], jenis: "pdf",
         url: D + "1uQ2pVvtn9VKEojdlQoAoo69NgD76abg7/view", lokasi: MD + " / 14. Kebermanfaatan Program / 14a.2", diperbarui: "2026-08-12" },
-      { judul: "Kegiatan Statistik Sumber Sari", kategori: ["lke"], jenis: "folder",
-        url: F + "1auwvaZa6fjIYvg1_MnGNtZmEe8WME6Iv", lokasi: ROOT, diperbarui: "2026-09-21" },
+      { judul: "Kegiatan Statistik Sumber Sari (8 tahap GSBPM)", kategori: ["lke"], jenis: "folder",
+        url: F + "1auwvaZa6fjIYvg1_MnGNtZmEe8WME6Iv", lokasi: ROOT, diperbarui: "2026-09-21",
+        ket: "Folder induk kegiatan statistik desa, dibagi per tahap GSBPM." },
+      { judul: "GSBPM 1. Spesifikasi Kebutuhan", kategori: ["lke"], jenis: "folder", url: F + "1wOr8oyPfXxK6K3tMt84ewO_0hv5FzALs", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 2. Desain", kategori: ["lke"], jenis: "folder", url: F + "1VX8LsiXZl4ntrZKW9yX4NHQvz6Vfdax8", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 3. Membangun", kategori: ["lke"], jenis: "folder", url: F + "1tGRss8TNp7p0al-gbHJRWhywZAd0NkX9", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 4. Pengumpulan Data", kategori: ["lke"], jenis: "folder", url: F + "1q8GymYVpzgWYBeSs6E0C9fM7hO1FHuMk", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 5. Pengolahan Data", kategori: ["lke"], jenis: "folder", url: F + "18RAD_OylVJxOhIX7Lwyhzt-f8HQRyO-N", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 6. Analisis", kategori: ["lke"], jenis: "folder", url: F + "1tcp9ETRU1GH6Ftmc3ST-XFD2H6UFTm9d", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 7. Diseminasi", kategori: ["lke"], jenis: "folder", url: F + "1JwdlAnDTH4wUTxXEb8Q3wDooEz4nIAGK", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
+      { judul: "GSBPM 8. Evaluasi", kategori: ["lke"], jenis: "folder", url: F + "1LM72Y0I9ZWeDOOlhl7A4fO85I3rjxGl5", lokasi: ROOT + " / Kegiatan Statistik Sumber Sari", diperbarui: "2026-09-21" },
 
       /* ---------- DOKUMENTASI ---------- */
       { judul: "Video Cantik Sumber Sari", kategori: ["dokumentasi"], jenis: "folder", utama: true,
