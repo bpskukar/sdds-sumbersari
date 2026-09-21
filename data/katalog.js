@@ -62,7 +62,7 @@
        Cara menambah / mengganti akun:
          1. Buka halaman ganti-sandi.html di situs ini.
          2. Isi nama akun, email/ID, dan kata sandi → klik "Buat kode akun".
-         3. Salin baris { nama: ..., hash: ... }, tempel di dalam akun: [ ].
+         3. Salin baris { nama: ..., hash: ... }, tempel di dalam akun: [{ nama: "Perangkat Desa Sumber Sari", hash: "c15a8f7d73df823ebf936714b64dd34920f9f6b1c8cc7c9651fc1e8af2efb3e4" }, ].
          4. Hapus baris akun lama bila sandinya diganti. Commit.
        Selama akun: [] masih kosong, situs menampilkan layar penyiapan.
        --------------------------------------------------------------- */
