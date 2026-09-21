@@ -509,7 +509,7 @@
       burger.innerHTML = ic(open ? "x" : "menu");
     }
     burger.addEventListener("click", function () { setMenu(!navLinks.classList.contains("buka")); });
-    navLinks.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+    navLinks.addEventListener("click", function (e) { if (e.target.closest("a, button")) setMenu(false); });
     setMenu(false);
 
     /* =================================================================
@@ -521,7 +521,8 @@
       navLinks.innerHTML = menu.map(function (m) {
         return '<a class="nav-ext" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + (m.terbatas ? ic("lock") : ic("sheet")) + esc(m.label) + "</a>";
       }).join("") + NAV_TETAP.map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + "</a>"; }).join("") +
-        '<a href="#/statistik" class="nav-stat">Statistik</a>';
+        '<a href="#/statistik" class="nav-stat">Statistik</a>' +
+        (sudahTerpasang() ? "" : '<a href="#pasang" class="nav-pasang" data-act="pasang">' + ic("phone") + "Pasang SDDS di HP</a>");
       navA = $$(".nav-links a[href^='#']");
     }
 
@@ -2043,24 +2044,84 @@
 
     /* ---------- pasang di HP (PWA) ---------- */
     function sudahTerpasang() { return (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; }
+    function infoPerangkat() {
+      var ua = navigator.userAgent || "";
+      var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var android = /android/i.test(ua);
+      return {
+        ios: ios, android: android,
+        hp: ios || android || /mobile/i.test(ua),
+        /* browser di dalam aplikasi lain (WhatsApp, Facebook, Instagram, dll.) tidak bisa memasang aplikasi */
+        dalamApp: /FBAN|FBAV|FB_IAB|Instagram|Line\/|WhatsApp|Telegram|; wv\)/i.test(ua)
+      };
+    }
+    var URL_SITUS = location.origin + location.pathname;
     function pasangAplikasi() {
       var ev = window.SDDSPasang && window.SDDSPasang.acara;
-      if (ev) {
+      if (ev && !sudahTerpasang()) {
         ev.prompt();
-        (ev.userChoice || Promise.resolve({})).then(function (r) { if (r && r.outcome === "accepted") toast("SDDS dipasang di perangkat ini", "check"); window.SDDSPasang.acara = null; renderPasang(); });
+        (ev.userChoice || Promise.resolve({})).then(function (r) {
+          if (r && r.outcome === "accepted") toast("SDDS dipasang di perangkat ini", "check");
+          window.SDDSPasang.acara = null; renderPasang();
+        });
         return;
       }
-      var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var P = infoPerangkat(), langkah, tombol = "";
+      if (sudahTerpasang()) langkah = "<p>SDDS sudah terpasang di perangkat ini. Buka dari ikon <b>SDDS</b> di layar utama.</p>";
+      else if (P.dalamApp) {
+        langkah = "<p>Anda membuka SDDS dari dalam aplikasi lain (misalnya WhatsApp). Dari sini SDDS belum bisa dipasang.</p>" +
+          '<ol class="langkah"><li>' + (P.android ? "Ketuk <b>Buka di Chrome</b> di bawah, atau ketuk menu <b>⋮</b> lalu <b>Buka di Chrome</b>." : "Ketuk ikon <b>⋯</b> atau <b>kompas</b>, lalu pilih <b>Buka di Safari</b>.") + "</li>" +
+          "<li>Setelah terbuka di " + (P.android ? "Chrome" : "Safari") + ", ketuk <b>Pasang SDDS di HP</b> lagi.</li></ol>";
+        if (P.android) tombol = '<a class="btn" href="intent://' + esc(location.host + location.pathname) + '#Intent;scheme=https;package=com.android.chrome;end">' + ic("external") + "Buka di Chrome</a>";
+      } else if (P.ios) {
+        langkah = '<ol class="langkah"><li>Ketuk tombol <b>Bagikan</b> (kotak dengan panah ke atas) di bawah atau di sebelah alamat situs.</li><li>Gulir, lalu pilih <b>Tambah ke Layar Utama</b>.</li><li>Ketuk <b>Tambah</b>. Ikon SDDS muncul di layar utama.</li></ol>';
+      } else if (P.android) {
+        langkah = '<ol class="langkah"><li>Buka situs ini di <b>Google Chrome</b>.</li><li>Ketuk menu <b>⋮</b> di kanan atas.</li><li>Pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>, lalu <b>Instal</b>.</li></ol>';
+      } else {
+        langkah = '<ol class="langkah"><li>Di Chrome atau Edge, klik ikon <b>Instal</b> (layar dengan panah) di ujung kanan kolom alamat.</li><li>Atau buka menu <b>⋮</b> → <b>Simpan dan bagikan</b> → <b>Instal halaman sebagai aplikasi</b>.</li></ol>' +
+          '<p class="gf-hint">Untuk HP: kirim link ini ke HP, buka di Chrome (Android) atau Safari (iPhone), lalu ketuk <b>Pasang SDDS di HP</b>.</p>';
+      }
       bukaDialog('<div class="dlg-form" id="dlgf-pasang">' + kepala("Pasang SDDS di HP", "Buka lebih cepat dari layar utama, seperti aplikasi") +
-        '<div class="dlg-body">' + (sudahTerpasang() ? "<p>SDDS sudah terpasang di perangkat ini.</p>" :
-          (ios ? '<ol class="langkah"><li>Buka situs ini di <b>Safari</b>.</li><li>Ketuk tombol <b>Bagikan</b> (kotak dengan panah ke atas).</li><li>Pilih <b>Tambah ke Layar Utama</b> → <b>Tambah</b>.</li></ol>'
-            : '<ol class="langkah"><li>Buka situs ini di <b>Google Chrome</b>.</li><li>Ketuk menu <b>⋮</b> di kanan atas.</li><li>Pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</li></ol>') +
-          '<p class="gf-hint">Setelah terpasang, daftar data tetap bisa dibuka walau sinyal lemah (memakai data tersimpan terakhir). Berkas di Google Drive tetap butuh internet.</p>') +
-        '</div><div class="dlg-foot"><div></div><div class="dlg-foot-r"><button class="btn" type="button" data-act="dlg-close">Mengerti</button></div></div></div>');
+        '<div class="dlg-body">' + langkah +
+        (sudahTerpasang() ? "" : '<p class="gf-hint">Setelah terpasang, daftar data tetap bisa dibuka walau sinyal lemah (memakai data tersimpan terakhir). Berkas di Google Drive tetap butuh internet.</p>') +
+        '</div><div class="dlg-foot"><div><button class="btn ghost" type="button" data-copy="' + esc(URL_SITUS) + '">' + ic("copy") + 'Salin link</button></div><div class="dlg-foot-r">' + tombol +
+        '<button class="btn' + (tombol ? " ghost" : "") + '" type="button" data-act="dlg-close">Mengerti</button></div></div></div>');
     }
+
+    /* tombol di kepala halaman + ajakan di HP (bisa ditutup, muncul lagi 14 hari kemudian) */
+    var K_PASANG_TUTUP = "sdds-pasang-tutup";
+    (function () {
+      var aksi = $(".nav-actions"), tema = $("#theme-toggle");
+      if (aksi && tema && !$("#pasang-btn")) {
+        var b = document.createElement("button");
+        b.className = "icon-btn pasang-btn"; b.id = "pasang-btn"; b.type = "button";
+        b.setAttribute("data-act", "pasang"); b.title = "Pasang SDDS di HP"; b.setAttribute("aria-label", "Pasang SDDS di HP");
+        b.innerHTML = ic("download");
+        aksi.insertBefore(b, tema);
+      }
+      if (!$("#pasang-banner")) {
+        var d = document.createElement("div");
+        d.className = "pasang-banner"; d.id = "pasang-banner"; d.hidden = true;
+        d.setAttribute("role", "region"); d.setAttribute("aria-label", "Pasang SDDS di HP");
+        d.innerHTML = '<span class="pb-ico">' + ic("phone") + '</span><div class="pb-teks"><b>Pasang SDDS di HP</b><span>Buka dari layar utama, seperti aplikasi.</span></div>' +
+          '<button class="btn sm gold" type="button" data-act="pasang">Pasang</button>' +
+          '<button class="pb-tutup" type="button" id="pasang-tutup" aria-label="Tutup ajakan pasang">' + ic("x") + "</button>";
+        document.body.appendChild(d);
+        $("#pasang-tutup").addEventListener("click", function () { simpanLokal(K_PASANG_TUTUP, String(Date.now())); renderPasang(); });
+      }
+    })();
     function renderPasang() {
+      var terpasang = sudahTerpasang();
       var el = $("#link-pasang");
-      if (el) el.hidden = sudahTerpasang();
+      if (el) el.hidden = terpasang;
+      var btn = $("#pasang-btn");
+      if (btn) btn.hidden = terpasang;
+      var banner = $("#pasang-banner");
+      if (banner) {
+        var tutup = +(simpanLokal(K_PASANG_TUTUP) || 0);
+        banner.hidden = terpasang || !infoPerangkat().hp || (Date.now() - tutup < 14 * 864e5);
+        document.body.classList.toggle("ada-banner", !banner.hidden);
+      }
     }
     document.addEventListener("sdds-bisa-pasang", renderPasang);
 
@@ -2068,7 +2129,7 @@
     renderSemua();
     route();
     muatDariSheet();
-    renderPasang();
+    setTimeout(renderPasang, 1200);
 
     /* ---------- akun & keluar ---------- */
     var logoutBtn = $("#logout");
