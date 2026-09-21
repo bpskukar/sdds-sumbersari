@@ -2,17 +2,24 @@
    SDDS — Satu Data Desa Sumber Sari
    Backend Google Sheet untuk mode edit website.
 
-   CARA PASANG (sekali saja):
-   1. Buka spreadsheet "SDDS – Database Katalog".
-   2. Menu Ekstensi → Apps Script. Hapus isi Code.gs, tempel seluruh file ini, Simpan.
-   3. Kembali ke spreadsheet, muat ulang halaman. Muncul menu "SDDS".
-   4. SDDS → 1. Siapkan database  (izinkan akses saat diminta).
-   5. SDDS → 2. Atur kunci editor  (kunci untuk menyimpan dari website).
-   6. Di Apps Script: Terapkan → Deployment baru → jenis "Aplikasi web"
-      - Jalankan sebagai: Saya
-      - Yang memiliki akses: Siapa saja
-      Salin URL aplikasi web, tempel di data/katalog.js → backend.url.
+   Kunci editor dibuat dari website saat pertama kali menekan tombol Edit
+   (disimpan sebagai hash di Properti skrip). Cara lain: tulis kunci di
+   tab "Pengaturan", baris "kunciEditor", kolom "nilai".
+   Lupa kunci? Apps Script → Setelan project → Properti skrip → hapus
+   KUNCI_HASH (dan kosongkan sel kunciEditor), lalu buat kunci baru.
+
+   PEMASANGAN (sekali saja):
+   1. Buka spreadsheet "SDDS – Database Katalog" → Ekstensi → Apps Script.
+   2. Hapus semua isi editor, tempel seluruh file ini, klik Simpan.
+   3. Terapkan → Deployment baru → (ikon roda gigi) Aplikasi web
+      Jalankan sebagai: Saya · Yang memiliki akses: Siapa saja → Terapkan.
+   4. Izinkan akses (Lanjutan → Buka … (tidak aman) → Izinkan).
+   5. Salin URL aplikasi web (…/exec) → isi di data/katalog.js → backend.url.
+   6. Buka website → Edit → buat kunci editor → Impor data awal.
    ===================================================================== */
+
+/* ID spreadsheet database (dipakai bila script tidak menempel di spreadsheet) */
+var SHEET_ID = '1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg';
 
 var KOLOM = {
   Kategori: ['id', 'nama', 'namaPanjang', 'ikon', 'warna', 'deskripsi', 'sorot'],
@@ -24,6 +31,7 @@ var BOOL = { sorot: 1, terbatas: 1, utama: 1, unggulan: 1 };
 
 /* ---------------- menu di spreadsheet ---------------- */
 function onOpen() {
+  try { SpreadsheetApp.getUi(); } catch (e) { return; }
   SpreadsheetApp.getUi().createMenu('SDDS')
     .addItem('1. Siapkan database', 'siapkan')
     .addItem('2. Atur kunci editor', 'aturKunci')
@@ -33,7 +41,7 @@ function onOpen() {
 }
 
 function siapkan() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   Object.keys(KOLOM).forEach(function (nama) {
     var sh = ss.getSheetByName(nama) || ss.insertSheet(nama);
     var kol = KOLOM[nama];
@@ -85,9 +93,17 @@ function doPost(e) {
   var terkunci = false;
   try {
     var b = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-    var h = PropertiesService.getScriptProperties().getProperty('KUNCI_HASH');
-    if (!h) return json_({ ok: false, pesan: 'Kunci editor belum diatur. Buka Google Sheet database → menu SDDS → Atur kunci editor.' });
-    if (!b.kunci || hash_(String(b.kunci)) !== h) return json_({ ok: false, kode: 'kunci', pesan: 'Kunci editor salah.' });
+    var cek = cocokKunci_(b.kunci);
+    if (b.aksi === 'buatKunci') {
+      if (cek !== null) return json_({ ok: false, pesan: 'Kunci editor sudah pernah dibuat. Masukkan kunci yang sudah ada.' });
+      var baru = String(b.kunciBaru || '').trim();
+      if (baru.length < 8) return json_({ ok: false, pesan: 'Kunci minimal 8 karakter.' });
+      PropertiesService.getScriptProperties().setProperty('KUNCI_HASH', hash_(baru));
+      catat_(String(b.oleh || 'Perangkat desa').slice(0, 60), 'Buat kunci editor', 'Kunci editor dibuat dari website');
+      return json_({ ok: true });
+    }
+    if (cek === null) return json_({ ok: false, kode: 'belum-ada-kunci', pesan: 'Kunci editor belum dibuat.' });
+    if (!cek) return json_({ ok: false, kode: 'kunci', pesan: 'Kunci editor salah.' });
     if (b.aksi === 'cek') return json_({ ok: true });
 
     lock.waitLock(20000);
@@ -143,13 +159,21 @@ function doPost(e) {
 }
 
 /* ---------------- baca & tulis tabel ---------------- */
+function ss_() {
+  var a = null;
+  try { a = SpreadsheetApp.getActiveSpreadsheet(); } catch (e) { a = null; }
+  return a || SpreadsheetApp.openById(SHEET_ID);
+}
+
 function sheet_(nama) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   var sh = ss.getSheetByName(nama);
   if (!sh) {
     sh = ss.insertSheet(nama);
     sh.getRange(1, 1, 1, KOLOM[nama].length).setValues([KOLOM[nama]]).setFontWeight('bold');
     sh.setFrozenRows(1);
+    sh.getRange(1, 1, sh.getMaxRows(), KOLOM[nama].length).setNumberFormat('@');
+    if (nama === 'Pengaturan') sh.getRange(2, 1, 1, 2).setValues([['kunciEditor', '']]);
   }
   return sh;
 }
@@ -213,7 +237,7 @@ function hapusBaris_(nama, id) {
 function bacaPengaturan_() {
   var hasil = {};
   baca_('Pengaturan').forEach(function (r) {
-    if (!r.kunci) return;
+    if (!r.kunci || r.kunci === 'kunciEditor') return;
     try { hasil[r.kunci] = JSON.parse(r.nilai); } catch (e) { hasil[r.kunci] = r.nilai; }
   });
   return hasil;
@@ -236,6 +260,7 @@ function statusLengkap_() {
     kategori: baca_('Kategori'),
     data: baca_('Data'),
     pengaturan: bacaPengaturan_(),
+    kunciSiap: cocokKunci_('') !== null,
     waktu: new Date().toISOString()
   };
 }
@@ -283,6 +308,17 @@ function rapikanKategori_(k) {
     deskripsi: String(k.deskripsi || '').slice(0, 400),
     sorot: !!k.sorot
   };
+}
+
+/* ---------------- kunci editor ---------------- */
+/* null = belum diatur, true = cocok, false = salah */
+function cocokKunci_(k) {
+  var h = PropertiesService.getScriptProperties().getProperty('KUNCI_HASH');
+  if (h) return !!k && hash_(String(k)) === h;
+  var sel = '';
+  baca_('Pengaturan').forEach(function (r) { if (r.kunci === 'kunciEditor') sel = String(r.nilai || '').trim(); });
+  if (!sel) return null;
+  return !!k && String(k).trim() === sel;
 }
 
 /* ---------------- utilitas ---------------- */

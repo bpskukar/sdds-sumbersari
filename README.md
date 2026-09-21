@@ -86,22 +86,26 @@ Selama website belum tersambung ke spreadsheet, mode edit berjalan sebagai **mod
 
 ### Menyambungkan ke Google Sheet (sekali saja, ±10 menit)
 
-1. Buka spreadsheet **SDDS – Database Katalog**.
-2. Menu **Ekstensi → Apps Script**. Hapus isi `Code.gs`, tempel seluruh isi file `apps-script/Kode.gs`, lalu **Simpan** (ikon disket).
-3. Kembali ke tab spreadsheet dan muat ulang (F5). Muncul menu **SDDS** di samping menu Bantuan.
-4. **SDDS → 1. Siapkan database**. Saat diminta izin: pilih akun → *Google hasn't verified this app* → **Advanced / Lanjutan** → **Go to … (unsafe) / Buka … (tidak aman)** → **Allow / Izinkan**. Peringatan ini wajar untuk script buatan sendiri.
-5. **SDDS → 2. Atur kunci editor** → tulis kunci (minimal 8 karakter). Kunci ini dipakai perangkat untuk menyimpan perubahan dari website.
-6. Kembali ke Apps Script: **Terapkan (Deploy) → Deployment baru** → ikon roda gigi → **Aplikasi web**.
-   - *Jalankan sebagai*: **Saya**
-   - *Yang memiliki akses*: **Siapa saja**
-   - **Terapkan**, lalu salin **URL aplikasi web** (berakhiran `/exec`).
-7. Di GitHub, edit `data/katalog.js`: isi `backend: { url: "…/exec" }` dengan URL tadi → **Commit**.
-8. Buka website → **Edit** → masukkan kunci editor → klik **Impor data awal** (sekali saja). Selesai.
+1. Buka spreadsheet **SDDS – Database Katalog** (folder DESA CANTIK) → menu **Ekstensi → Apps Script**.
+2. Di editor yang terbuka, hapus semua tulisan yang ada, lalu tempel seluruh isi `apps-script/Kode.gs`
+   (buka file itu di GitHub → tombol **Copy raw file**). Klik ikon **Simpan** (disket).
+3. Klik tombol biru **Terapkan** (*Deploy*) di kanan atas → **Deployment baru** (*New deployment*).
+   Klik ikon roda gigi di samping *Pilih jenis* → **Aplikasi web** (*Web app*). Isi:
+   - *Jalankan sebagai* (*Execute as*): **Saya** (*Me*)
+   - *Yang memiliki akses* (*Who has access*): **Siapa saja** (*Anyone*)
+
+   lalu klik **Terapkan** (*Deploy*).
+4. Muncul permintaan izin → **Izinkan akses** → pilih akun Google → muncul *Google belum memverifikasi aplikasi ini* →
+   klik **Lanjutan** (*Advanced*) → **Buka Proyek tanpa judul (tidak aman)** → **Izinkan** (*Allow*).
+   Peringatan ini wajar untuk script buatan sendiri.
+5. Salin **URL aplikasi web** (berakhiran `/exec`). Tempel di `data/katalog.js` bagian `backend: { url: "…" }` → **Commit**.
+6. Buka website → tombol **Edit** → website meminta **Buat kunci editor** → lalu **Impor data awal**. Selesai.
 
 Catatan:
 - Bila isi `Kode.gs` diganti, buat versi baru: **Terapkan → Kelola deployment → pensil → Versi: Versi baru → Terapkan**. URL tetap sama.
+- Lupa kunci editor: Apps Script → **Setelan project** (ikon roda gigi kiri) → **Properti skrip** → hapus `KUNCI_HASH`. Setelah itu kunci baru bisa dibuat lagi dari website.
 - Tab *Kategori* dan *Data* boleh juga diedit langsung di spreadsheet. Baris baru tanpa `id` otomatis diberi id.
-- Membaca daftar tautan tidak butuh kunci (sama seperti `katalog.js` sekarang); menyimpan perubahan wajib kunci editor. Isi berkas tetap dilindungi pengaturan berbagi Google Drive.
+- Membaca daftar tautan tidak butuh kunci (sama seperti `katalog.js`); menyimpan perubahan wajib kunci editor. Isi berkas tetap dilindungi pengaturan berbagi Google Drive.
 
 ## Akun perangkat desa (halaman masuk)
 

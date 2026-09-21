@@ -155,7 +155,7 @@
         menu: clone(S.menu || [])
       };
     }
-    var db = { state: dataAwal(), sumber: "katalog", kosong: false, memuat: false, galat: "" };
+    var db = { state: dataAwal(), sumber: "katalog", kosong: false, memuat: false, galat: "", kunciSiap: true };
 
     function terapkan(res) {
       var st = dataAwal();
@@ -166,6 +166,7 @@
       if (Array.isArray(p.menu)) st.menu = p.menu;
       db.state = st;
       db.kosong = !ada;
+      db.kunciSiap = res.kunciSiap !== false;
       db.sumber = ada ? "sheet" : "katalog";
     }
 
@@ -220,7 +221,7 @@
             if (err.kode === "kunci") { kunciMem = ""; simpanLokal(K_KUNCI, null); }
             throw err;
           }
-          if (payload.aksi !== "cek") {
+          if (payload.aksi !== "cek" && payload.aksi !== "buatKunci") {
             terapkan(res);
             simpanLokal(K_CACHE, JSON.stringify(res));
             renderSemua();
@@ -1082,7 +1083,7 @@
         '<form class="dlg-form" id="dlgf-kunci" novalidate>' +
         kepala("Masuk mode edit", "Perubahan akan tersimpan ke Google Sheet dan terlihat oleh semua perangkat") +
         '<div class="dlg-body">' +
-        bidang("fkey", "Kunci editor", '<input id="fkey" type="password" autocomplete="off">', "Kunci diatur admin lewat menu <b>SDDS → Atur kunci editor</b> di Google Sheet database.") +
+        bidang("fkey", "Kunci editor", '<input id="fkey" type="password" autocomplete="off">', "Minta kunci editor ke admin desa. Kunci dibuat saat website pertama kali tersambung ke Google Sheet.") +
         '<p class="gate-err dlg-err" role="alert" hidden></p></div>' +
         kaki("", "Masuk mode edit") + "</form>"
       );
@@ -1101,7 +1102,37 @@
         }, function (err) {
           kunciMem = "";
           b.disabled = false; b.textContent = "Masuk mode edit";
+          if (err && err.kode === "belum-ada-kunci") { db.kunciSiap = false; dialogBuatKunci(setelahKunci); return; }
           tampilGalat(form, (err && err.message) || "Kunci tidak bisa diperiksa.");
+        });
+      });
+    }
+    function dialogBuatKunci(lanjut) {
+      bukaDialog(
+        '<form class="dlg-form" id="dlgf-buatkunci" novalidate>' +
+        kepala("Buat kunci editor", "Langkah pertama setelah website tersambung ke Google Sheet") +
+        '<div class="dlg-body"><p>Kunci editor dipakai semua perangkat desa untuk menyimpan perubahan dari website. Buat sekali di sini, lalu bagikan hanya kepada perangkat yang boleh mengedit.</p>' +
+        bidang("fbk-1", "Kunci editor baru", '<input id="fbk-1" type="password" autocomplete="new-password" minlength="8">', "Minimal 8 karakter. Jangan sama dengan kata sandi Gmail.") +
+        bidang("fbk-2", "Ulangi kunci editor", '<input id="fbk-2" type="password" autocomplete="new-password">') +
+        '<p class="gate-err dlg-err" role="alert" hidden></p></div>' +
+        kaki("", "Buat kunci") + "</form>"
+      );
+      var form = $("#dlgf-buatkunci");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var k1 = $("#fbk-1").value.trim(), k2 = $("#fbk-2").value.trim();
+        if (k1.length < 8) return tampilGalat(form, "Kunci minimal 8 karakter.");
+        if (k1 !== k2) return tampilGalat(form, "Kedua kunci belum sama.");
+        var b = $("[data-simpan]", form); b.disabled = true; b.textContent = "Menyimpan…";
+        kirim({ aksi: "buatKunci", kunciBaru: k1 }).then(function () {
+          kunciMem = k1; simpanLokal(K_KUNCI, k1); db.kunciSiap = true;
+          tutupDialog();
+          nyalakanEdit();
+          toast("Kunci editor dibuat", "check");
+          if (db.kosong) impor(); else if (lanjut) lanjut();
+        }, function (err) {
+          b.disabled = false; b.textContent = "Buat kunci";
+          tampilGalat(form, (err && err.message) || "Kunci belum bisa dibuat.");
         });
       });
     }
@@ -1126,7 +1157,7 @@
         return;
       }
       if (kunciMem) { nyalakanEdit(); if (lanjut) lanjut(); return; }
-      dialogKunci(lanjut);
+      if (!db.kunciSiap) dialogBuatKunci(lanjut); else dialogKunci(lanjut);
     }
     $("#edit-toggle").addEventListener("click", function () {
       if (editing) { editing = false; renderSemua(); return; }
