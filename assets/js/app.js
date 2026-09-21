@@ -1727,7 +1727,7 @@
         '<div class="toggles">' + sakelar("fa-aktif", "Kirim laporan & pengingat setiap minggu", notif.aktif !== false, "Hanya dikirim bila ada yang perlu ditindaklanjuti") + "</div>" +
         bidang("fa-pantau", "Folder yang dipantau kotak masuk", '<textarea id="fa-pantau" rows="2" placeholder="Satu link folder per baris">' + esc(pantau) + "</textarea>", "Berkas baru di folder ini (termasuk subfolder) yang belum dicatat akan masuk kotak masuk.") +
         bidang("fa-unggah", "Folder unggahan bawaan", '<input id="fa-unggah" type="url" autocomplete="off" value="' + esc(st.folderUnggah || "") + '" placeholder="' + esc(induk) + '">', "Dipakai bila kategori belum punya folder. Kosongkan untuk memakai folder induk DESA CANTIK.") +
-        bidang("fa-dasbor", "Spreadsheet sumber dasbor statistik", '<input id="fa-dasbor" type="url" autocomplete="off" value="' + esc(st.dasborSumber || "") + '" placeholder="' + esc(sumberDef) + '">', "Spreadsheet data penduduk (per orang). Kosongkan untuk memakai DATA SUMBER SARI. Yang tampil di dasbor hanya angka ringkasan.") +
+        bidang("fa-dasbor", "Spreadsheet sumber dasbor statistik", '<input id="fa-dasbor" type="url" autocomplete="off" value="' + esc(st.dasborSumber || "") + '" placeholder="' + esc(sumberDef) + '">', "Tempel tautan TAB data penduduk (tautan berisi gid=…); hanya tab itu yang dihitung. Kosongkan untuk memakai tab DATA PENDUDUK di DATA SUMBER SARI. Yang tampil di dasbor hanya angka ringkasan.") +
         '<p class="gate-err dlg-err" role="alert" hidden></p>' +
         "</form>" +
         '<div class="alat"><p class="alat-h">Jalankan sekarang</p><div class="alat-row">' +
