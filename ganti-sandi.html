@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buat Kode Akun SDDS</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main class="tool-page wrap">
+  <a class="tool-back" href="index.html">← Kembali ke SDDS</a>
+  <div class="gate-card">
+    <div class="gate-brand">
+      <img class="brand-mark" src="assets/img/favicon.svg" alt="" width="40" height="40">
+      <span><strong>SDDS</strong><small>Satu Data Desa Sumber Sari</small></span>
+    </div>
+    <p class="gate-kicker">Pengelola akun</p>
+    <h1>Buat kode akun perangkat</h1>
+    <p class="gate-sub">Untuk menambah akun atau mengganti kata sandi. Kode dibuat di browser ini saja — kata sandi tidak dikirim ke mana pun dan tidak disimpan.</p>
+    <div id="gen"></div>
+    <p class="tool-note">Mengganti kata sandi: buat kode baru, tempel di <code>akun: [ ]</code>, lalu hapus baris akun lama. Semua perangkat yang masih masuk dengan sandi lama otomatis keluar.</p>
+  </div>
+</main>
+<script src="data/katalog.js"></script>
+<script src="assets/js/akses.js"></script>
+<script>window.SDDSAkses && window.SDDSAkses.renderGenerator(document.getElementById("gen"));</script>
+</body>
+</html>

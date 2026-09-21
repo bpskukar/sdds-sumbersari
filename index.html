@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Satu Data Desa Sumber Sari</title>
+<meta name="description" content="SDDS — portal Satu Data Desa Sumber Sari, Kec. Loa Kulu, Kutai Kartanegara. Semua tautan data desa (DTSEN, RDDK, UMKM, Posyandu, profil desa) di satu tempat.">
+<meta name="theme-color" content="#123F2A">
+<meta property="og:title" content="SDDS · Satu Data Desa Sumber Sari">
+<meta property="og:description" content="Semua data Desa Sumber Sari di satu tempat, terhubung langsung ke Google Drive.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<!-- ============ GERBANG MASUK ============ -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#F2C14E"/>
+        <path d="M11 31V21M20 31V14M29 31V18" stroke="#123F2A" stroke-width="3.6" stroke-linecap="round"/>
+        <ellipse cx="11" cy="16.2" rx="2.3" ry="3.4" fill="#123F2A" transform="rotate(-22 11 16.2)"/>
+        <ellipse cx="20" cy="8.8" rx="2.3" ry="3.4" fill="#123F2A"/>
+        <ellipse cx="29" cy="12.8" rx="2.3" ry="3.4" fill="#123F2A" transform="rotate(22 29 12.8)"/>
+      </svg>
+      <span><strong>SDDS</strong><small>Satu Data Desa Sumber Sari</small></span>
+    </div>
+
+    <div id="gate-login">
+      <p class="gate-kicker"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="11" x="4" y="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Data internal desa</p>
+      <h1>Masuk untuk membuka data</h1>
+      <p class="gate-sub">Katalog ini khusus perangkat Desa Sumber Sari dan agen statistik Desa Cantik.</p>
+      <form id="gate-form" novalidate>
+        <div class="gf">
+          <label for="g-id">Email / ID perangkat</label>
+          <input id="g-id" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="email">
+        </div>
+        <div class="gf">
+          <label for="g-pw">Kata sandi</label>
+          <div class="gf-pw">
+            <input id="g-pw" type="password" autocomplete="current-password">
+            <button type="button" id="g-eye" class="gf-eye" aria-label="Tampilkan kata sandi" aria-pressed="false">
+              <svg class="ico eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="ico eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.2A10 10 0 0 1 12 4c6.4 0 10 8 10 8a17 17 0 0 1-2.2 3.2"/><path d="M6.6 6.6C3.8 8.4 2 12 2 12s3.6 8 10 8c1.9 0 3.6-.6 5-1.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>
+            </button>
+          </div>
+        </div>
+        <label class="gf-check" for="g-ingat"><input type="checkbox" id="g-ingat"> Tetap masuk di perangkat ini (30 hari)</label>
+        <p class="gate-err" id="g-err" role="alert" hidden></p>
+        <button class="btn gold gate-btn" type="submit" id="g-btn">Masuk</button>
+      </form>
+      <p class="gate-help">Lupa kata sandi atau belum punya akun? <a id="g-help" href="#">Hubungi admin desa</a>.</p>
+    </div>
+
+    <div id="gate-setup" hidden>
+      <p class="gate-kicker"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="11" x="4" y="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Penyiapan pertama</p>
+      <h1>Siapkan akun perangkat desa</h1>
+      <p class="gate-sub">Situs ini belum punya akun, jadi masih terkunci untuk semua orang. Isi email/ID dan kata sandi yang akan dipakai perangkat desa. Kata sandi tidak disimpan — yang dibuat hanya kode acak (hash).</p>
+      <div id="gate-gen"></div>
+    </div>
+  </div>
+  <p class="gate-foot">Desa Sumber Sari · Loa Kulu · Kutai Kartanegara</p>
+    <svg class="land" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <circle class="sun" cx="1188" cy="92" r="46"/>
+      <path class="hill-far" d="M0 196 L120 170 L240 180 L360 140 L480 152 L600 116 L720 130 L840 100 L960 120 L1080 88 L1200 108 L1320 70 L1440 84 V300 H0 Z"/>
+      <polyline class="ridge" points="0,196 120,170 240,180 360,140 480,152 600,116 720,130 840,100 960,120 1080,88 1200,108 1320,70 1440,84"/>
+      <g class="ridge-dots">
+        <circle cx="120" cy="170" r="4.5"/><circle cx="240" cy="180" r="4.5"/><circle cx="360" cy="140" r="4.5"/>
+        <circle cx="480" cy="152" r="4.5"/><circle cx="600" cy="116" r="4.5"/><circle cx="720" cy="130" r="4.5"/>
+        <circle cx="840" cy="100" r="4.5"/><circle cx="960" cy="120" r="4.5"/><circle cx="1080" cy="88" r="4.5"/>
+        <circle cx="1200" cy="108" r="4.5"/>
+      </g>
+      <circle class="ridge-now" cx="1320" cy="70" r="6"/>
+      <path class="hill-mid" d="M0 236 C200 204 380 214 560 226 S900 198 1100 212 S1340 194 1440 204 V300 H0 Z"/>
+      <path class="hill-near" d="M0 262 C240 244 520 252 760 260 S1200 240 1440 252 V300 H0 Z"/>
+      <path class="terrace" d="M0 278 C260 262 540 270 780 277 S1210 260 1440 270"/>
+      <path class="terrace" d="M0 292 C280 280 560 287 800 293 S1220 280 1440 288"/>
+    </svg>
+</div>
+
+<div id="app" hidden>
+<a class="skip" href="#konten">Lewati ke konten</a>
+
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="#/" aria-label="SDDS — kembali ke beranda">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#F2C14E"/>
+        <path d="M11 31V21M20 31V14M29 31V18" stroke="#123F2A" stroke-width="3.6" stroke-linecap="round"/>
+        <ellipse cx="11" cy="16.2" rx="2.3" ry="3.4" fill="#123F2A" transform="rotate(-22 11 16.2)"/>
+        <ellipse cx="20" cy="8.8" rx="2.3" ry="3.4" fill="#123F2A"/>
+        <ellipse cx="29" cy="12.8" rx="2.3" ry="3.4" fill="#123F2A" transform="rotate(22 29 12.8)"/>
+      </svg>
+      <span class="brand-text"><strong>SDDS</strong><small>Satu Data Desa Sumber Sari</small></span>
+    </a>
+    <nav class="nav-links" id="nav-links" aria-label="Navigasi utama">
+      <a href="#kategori">Kategori</a>
+      <a href="#alur">Alur Data</a>
+      <a href="#katalog">Katalog</a>
+      <a href="#publikasi">Publikasi</a>
+      <a href="#panduan">Panduan</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Ganti tema terang/gelap"></button>
+      <button class="icon-btn" id="logout" type="button" aria-label="Keluar" title="Keluar" hidden></button>
+      <button class="icon-btn nav-burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Buka menu"></button>
+    </div>
+  </div>
+</header>
+
+<main id="konten">
+  <div id="view-home">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-inner">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="program-label">Desa Cantik · Desa Cinta Statistik 2026</span></p>
+        <h1 id="hero-title">Satu Data<br><em>Desa Sumber Sari</em></h1>
+        <p class="lead">DTSEN, RDDK, UMKM, laporan Posyandu hingga profil desa — semua tautan data desa dicatat di satu tempat dan langsung terhubung ke Google Drive. Tidak lagi tercecer di grup chat.</p>
+
+        <div class="search" role="search">
+          <label for="q-hero" class="sr-only">Cari data desa</label>
+          <span class="search-ico" data-icon="search" aria-hidden="true"></span>
+          <input id="q-hero" type="search" placeholder="Cari data: DTSEN, Posyandu, RT 5…" autocomplete="off" aria-controls="suggest" aria-expanded="false">
+          <kbd aria-hidden="true">/</kbd>
+          <div class="suggest" id="suggest" role="listbox" aria-label="Hasil pencarian cepat" hidden></div>
+        </div>
+        <div class="quick" id="quick" aria-label="Kategori populer"></div>
+      </div>
+
+      <svg class="land" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <circle class="sun" cx="1188" cy="92" r="46"/>
+        <path class="hill-far" d="M0 196 L120 170 L240 180 L360 140 L480 152 L600 116 L720 130 L840 100 L960 120 L1080 88 L1200 108 L1320 70 L1440 84 V300 H0 Z"/>
+        <polyline class="ridge" points="0,196 120,170 240,180 360,140 480,152 600,116 720,130 840,100 960,120 1080,88 1200,108 1320,70 1440,84"/>
+        <g class="ridge-dots">
+          <circle cx="120" cy="170" r="4.5"/><circle cx="240" cy="180" r="4.5"/><circle cx="360" cy="140" r="4.5"/>
+          <circle cx="480" cy="152" r="4.5"/><circle cx="600" cy="116" r="4.5"/><circle cx="720" cy="130" r="4.5"/>
+          <circle cx="840" cy="100" r="4.5"/><circle cx="960" cy="120" r="4.5"/><circle cx="1080" cy="88" r="4.5"/>
+          <circle cx="1200" cy="108" r="4.5"/>
+        </g>
+        <circle class="ridge-now" cx="1320" cy="70" r="6"/>
+        <path class="hill-mid" d="M0 236 C200 204 380 214 560 226 S900 198 1100 212 S1340 194 1440 204 V300 H0 Z"/>
+        <path class="hill-near" d="M0 262 C240 244 520 252 760 260 S1200 240 1440 252 V300 H0 Z"/>
+        <path class="terrace" d="M0 278 C260 262 540 270 780 277 S1210 260 1440 270"/>
+        <path class="terrace" d="M0 292 C280 280 560 287 800 293 S1220 280 1440 288"/>
+      </svg>
+    </section>
+
+    <!-- ============ STATISTIK ============ -->
+    <section class="wrap stats-wrap" aria-label="Sekilas Desa Sumber Sari">
+      <div class="stats" id="stats"></div>
+      <p class="stats-src" id="stats-src"></p>
+    </section>
+
+    <!-- ============ KATEGORI ============ -->
+    <section class="section wrap" id="kategori" aria-labelledby="kategori-title">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Kategori data</p>
+          <h2 id="kategori-title">Pilih jenis data yang dicari</h2>
+        </div>
+        <p class="sec-note">Tiga pendataan utama desa ditaruh paling depan. Setiap kategori berisi tautan folder dan berkas di Google Drive.</p>
+      </div>
+      <div class="cat-feature" id="cat-feature"></div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </section>
+
+    <!-- ============ ALUR ============ -->
+    <section class="section band" id="alur" aria-labelledby="alur-title">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="kicker">Alur satu data</p>
+            <h2 id="alur-title">Dari identifikasi sampai pemutakhiran</h2>
+          </div>
+          <p class="sec-note">Urutan kerja data desa mengikuti butir Lembar Kerja Evaluasi (LKE) Desa Cantik. Setiap tahap terhubung ke folder bukti dukungnya.</p>
+        </div>
+        <ol class="flow" id="flow"></ol>
+        <div class="flow-support" id="flow-support"></div>
+      </div>
+    </section>
+
+    <!-- ============ KATALOG ============ -->
+    <section class="section wrap" id="katalog" aria-labelledby="katalog-title">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Katalog lengkap</p>
+          <h2 id="katalog-title">Semua tautan data</h2>
+        </div>
+        <p class="sec-note" id="katalog-note"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="field grow">
+          <label for="q-cat" class="sr-only">Cari di katalog</label>
+          <span class="field-ico" data-icon="search" aria-hidden="true"></span>
+          <input id="q-cat" type="search" placeholder="Cari judul, lokasi, atau keterangan" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-kat" class="sr-only">Saring kategori</label>
+          <select id="f-kat"></select>
+        </div>
+        <div class="field">
+          <label for="f-sort" class="sr-only">Urutkan</label>
+          <select id="f-sort">
+            <option value="baru">Terbaru diperbarui</option>
+            <option value="lama">Terlama</option>
+            <option value="az">Judul A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="chips" id="f-jenis" role="group" aria-label="Saring jenis berkas"></div>
+
+      <ul class="list" id="list"></ul>
+      <div class="list-more"><button class="btn ghost" id="more" type="button" hidden></button></div>
+    </section>
+
+    <!-- ============ PUBLIKASI ============ -->
+    <section class="section wrap" id="publikasi" aria-labelledby="pub-title">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Rak publikasi</p>
+          <h2 id="pub-title">Publikasi Desa Sumber Sari</h2>
+        </div>
+        <p class="sec-note">Terbitan resmi hasil kegiatan Desa Cantik 2026 yang siap dibaca dan dibagikan.</p>
+      </div>
+      <div class="shelf" id="shelf"></div>
+    </section>
+
+    <!-- ============ PANDUAN ============ -->
+    <section class="section wrap" id="panduan" aria-labelledby="panduan-title">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Panduan pengelola</p>
+          <h2 id="panduan-title">Agar data tidak hilang lagi</h2>
+        </div>
+      </div>
+      <div class="guide">
+        <ol class="steps">
+          <li>
+            <h3>Simpan berkas di folder yang benar</h3>
+            <p>Unggah ke folder Google Drive sesuai kategorinya, misalnya <code>4. Pengumpulan Data / DTSEN</code>. Hindari menyimpan data penting hanya di chat atau folder pribadi.</p>
+          </li>
+          <li>
+            <h3>Salin tautan berbagi</h3>
+            <p>Di Drive: klik kanan berkas → <b>Bagikan</b> → <b>Salin link</b>. Untuk data pribadi warga, pilih <b>Dibatasi</b> agar hanya orang yang diberi izin yang bisa membuka.</p>
+          </li>
+          <li>
+            <h3>Catat di SDDS</h3>
+            <p>Buka repositori GitHub, edit <code>data/katalog.js</code>, salin satu blok data, ganti judul, tautan, dan tanggal, lalu <b>Commit</b>. Situs ikut berubah dalam ±1 menit.</p>
+          </li>
+        </ol>
+        <aside class="help">
+          <span class="help-ico" data-icon="lock" aria-hidden="true"></span>
+          <h3>Butuh berkas berlabel “Terbatas”?</h3>
+          <p>Berkas seperti DTSEN desil, RDDK, dan data per RT memuat data pribadi warga. SDDS hanya menyimpan tautannya — izin buka tetap diatur di Google Drive.</p>
+          <div class="help-actions">
+            <a class="btn" id="mail-akses" href="#">Minta akses data</a>
+            <a class="btn ghost" id="mail-lapor" href="#">Laporkan tautan rusak</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div id="view-kategori" hidden></div>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <p class="footer-name"><strong>SDDS</strong> · Satu Data Desa Sumber Sari</p>
+      <p id="footer-alamat">Desa Sumber Sari, Kecamatan Loa Kulu, Kabupaten Kutai Kartanegara, Kalimantan Timur</p>
+      <p class="footer-slogan" id="footer-slogan">Data tertata, desa berdaya.</p>
+    </div>
+    <div class="footer-links">
+      <p class="footer-h">Tautan</p>
+      <a id="link-web" href="https://sumbersari.klandesa.com/" target="_blank" rel="noopener">Website Desa Sumber Sari</a>
+      <a id="link-drive" href="#" target="_blank" rel="noopener">Folder induk Google Drive</a>
+      <a href="#katalog">Katalog data</a>
+    </div>
+    <div class="footer-links">
+      <p class="footer-h">Program</p>
+      <p>Desa Cantik (Desa Cinta Statistik) bersama BPS Kabupaten Kutai Kartanegara.</p>
+      <p class="footer-upd" id="footer-upd"></p>
+    </div>
+  </div>
+  <div class="wrap footer-base">
+    <p>© 2026 Pemerintah Desa Sumber Sari. Tautan mengarah ke Google Drive; hak akses mengikuti pengaturan berbagi masing-masing berkas.</p>
+  </div>
+</footer>
+
+</div><!-- /#app -->
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="data/katalog.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/akses.js"></script>
+</body>
+</html>
