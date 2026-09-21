@@ -1068,7 +1068,16 @@ body.editing .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 .kpi-label .key.p { background: var(--s-p); }
 .kpi-val { margin-top: 8px; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .kpi-val b { font-family: var(--f-body); font-weight: 700; font-size: clamp(26px, 2.6vw, 32px); line-height: 1; letter-spacing: -0.01em; }
-.kpi.hero .kpi-val b { font-size: clamp(40px, 4.4vw, 52px); color: var(--brand); }
+/* kotak utama "Penduduk": hijau tua seperti hero beranda, angka terang (terbaca di tema terang & gelap) */
+.kpi.utama {
+  background:
+    radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--sun) 24%, transparent) 0%, transparent 55%),
+    linear-gradient(155deg, var(--hero-1) 0%, var(--hero-2) 100%);
+  color: var(--hero-ink);
+}
+.kpi.utama .kpi-label { color: var(--gold); }
+.kpi.utama .kpi-val b { font-size: clamp(40px, 4.4vw, 52px); color: var(--hero-ink); }
+.kpi.utama .kpi-val span, .kpi.utama .kpi-ket { color: var(--hero-ink-2); }
 .kpi-val span { font-weight: 600; color: var(--ink-2); font-size: 14px; }
 .kpi-ket { margin-top: 6px; font-size: 13px; color: var(--muted); line-height: 1.4; }
 @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpi:nth-child(4n) { border-right: 1px solid var(--line); } .kpi:nth-child(2n) { border-right: 0; } }
@@ -1147,3 +1156,38 @@ body.editing .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 
 .nav-stat { white-space: nowrap; }
 @media print { .editbar, .nav, .footer, .kat-meta, .viz-tabel summary { display: none !important; } .viz-tabel[open] table, .viz-tabel table { display: table; } }
+
+/* ---------- pasang di HP ---------- */
+.nav-links .nav-pasang { display: none; }
+@media (max-width: 1120px) {
+  .nav-links .nav-pasang {
+    display: flex; align-items: center; gap: 10px; color: var(--gold);
+    margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .1); border-radius: 0;
+  }
+}
+@media (max-width: 400px) { .pasang-btn { display: none; } }
+.pasang-banner {
+  position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+  max-width: 560px; margin-inline: auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 10px 12px 14px; border-radius: 16px;
+  background: var(--hero-1); color: var(--hero-ink);
+  border: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 12px 32px rgba(0, 0, 0, .28);
+}
+body.editing .pasang-banner { display: none; }
+body.ada-banner:not(.editing) { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+body.ada-banner:not(.editing) .toast { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+.pb-ico {
+  width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 11px; font-size: 20px;
+  background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold);
+}
+.pb-teks { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.pb-teks b { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pb-teks span { font-size: 12.5px; color: var(--hero-ink-2); }
+.pb-tutup {
+  width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 0; border-radius: 9px;
+  background: transparent; color: var(--hero-ink-2); font-size: 18px; cursor: pointer;
+}
+.pb-tutup:hover { background: rgba(255, 255, 255, .1); color: var(--hero-ink); }
+.pb-tutup:focus-visible, .pasang-banner .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media print { .pasang-banner, .pasang-btn { display: none !important; } }
