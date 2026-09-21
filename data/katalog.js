@@ -77,6 +77,24 @@
       ]
     },
 
+    /* ---------------------------------------------------------------
+       PENYIMPANAN (MODE EDIT)
+       Isi url dengan alamat Web App Google Apps Script (…/exec) dari
+       spreadsheet "SDDS – Database Katalog" (lihat README → Mode edit).
+       Bila kosong, situs memakai data di file ini dan mode edit hanya
+       berjalan sebagai uji coba di browser masing-masing.
+       --------------------------------------------------------------- */
+    backend: {
+      url: "",
+      /* Spreadsheet database (dibuka lewat tombol "Buka Sheet" di mode edit) */
+      sheet: "https://docs.google.com/spreadsheets/d/1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg/edit"
+    },
+
+    /* Menu tambahan di navigasi atas (bisa diubah juga lewat mode edit) */
+    menu: [
+      { label: "Data Sumber Sari", url: "https://docs.google.com/spreadsheets/d/1C4eFqkd-xjLurRsvzEFMxHB_-GAqdSIZ-uN3lFxWFfQ/edit", terbatas: true }
+    ],
+
     kontak: {
       /* Dipakai untuk tombol "Minta akses" dan "Laporkan tautan rusak" */
       email: "desacantikdesasumbersari@gmail.com"
@@ -241,6 +259,9 @@
       { judul: "Data RT 9", kategori: ["rt"], jenis: "xlsx", terbatas: true, url: D + "1a2zYGbxA77uQI1ybuRiKFkzl4F3W_3Es/view", lokasi: ROOT + " / Data RT", diperbarui: "2026-06-22" },
       { judul: "Data RT 10", kategori: ["rt"], jenis: "xlsx", terbatas: true, url: D + "1uflQGpM8U3a32J20_8W6X4Z8UqCApU-H/view", lokasi: ROOT + " / Data RT", diperbarui: "2026-06-22" },
       { judul: "Data RT 11", kategori: ["rt"], jenis: "xlsx", terbatas: true, url: D + "1qbpoRPidWcLXFsGfPhpN6plzbQHDhZpw/view", lokasi: ROOT + " / Data RT", diperbarui: "2026-06-22" },
+      { judul: "Data Sumber Sari", kategori: ["rt"], jenis: "sheet", terbatas: true,
+        url: "https://docs.google.com/spreadsheets/d/1C4eFqkd-xjLurRsvzEFMxHB_-GAqdSIZ-uN3lFxWFfQ/edit", lokasi: "Google Drive", diperbarui: "2026-09-21",
+        ket: "Data penduduk per RT: kependudukan, pendidikan, pekerjaan, dan bantuan sosial." },
       { judul: "Pengolahan updating daftar penduduk", kategori: ["rt"], jenis: "xlsx", terbatas: true,
         url: D + "1rwBY5jFEcBa4sfCTnvITBRJGYkcQjalH/view", lokasi: KS + " / 8. Pengolahan Data", diperbarui: "2026-07-23" },
 

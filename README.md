@@ -16,7 +16,8 @@ assets/js/app.js      logika pencarian, filter, halaman kategori
 assets/js/akses.js    halaman masuk perangkat desa
 ganti-sandi.html      alat membuat kode akun / ganti kata sandi
 assets/img/           logo & favicon
-data/katalog.js       ← DAFTAR TAUTAN. Hanya file ini yang perlu diedit.
+data/katalog.js       ← pengaturan situs + data cadangan (dipakai bila Google Sheet belum tersambung)
+apps-script/Kode.gs   ← kode Apps Script untuk spreadsheet database (mode edit)
 ```
 
 ## Menayangkan di GitHub Pages
@@ -67,6 +68,40 @@ Perhatikan tanda koma `,` di antara blok `{ ... }`. Bila halaman kosong setelah 
 
 Untuk menambah kategori baru, tambahkan satu baris di bagian `kategori` (id, nama, ikon, warna, deskripsi).
 Angka ringkas di bawah banner (luas wilayah, penduduk, KK, dll.) ada di bagian `statistik`.
+
+## Mode edit — ubah link, kategori, dan tambah data dari website
+
+Setelah login, klik tombol **Edit** (ikon pensil) di kanan atas. Di mode edit:
+
+- setiap data punya tombol **Ubah** → ganti link Google Drive, judul, kategori, keterangan, atau **Hapus**;
+- **+ Tautan** menambah data baru (jenis berkas terdeteksi otomatis dari link);
+- **+ Kategori** membuat kategori baru (nama, deskripsi, ikon, warna); kategori yang ada bisa diubah atau dihapus lewat ikon pensil;
+- link tiap tahap GSBPM dan **Menu** atas (mis. *Data Sumber Sari*) juga bisa diganti;
+- pencarian, filter, dan jumlah data langsung ikut berubah.
+
+Perubahan disimpan ke spreadsheet **SDDS – Database Katalog** (folder DESA CANTIK) lewat Google Apps Script,
+jadi langsung terlihat di semua perangkat tanpa mengedit GitHub. Setiap perubahan tercatat di tab **Riwayat**.
+
+Selama website belum tersambung ke spreadsheet, mode edit berjalan sebagai **mode uji**: perubahan hanya tersimpan di browser yang dipakai.
+
+### Menyambungkan ke Google Sheet (sekali saja, ±10 menit)
+
+1. Buka spreadsheet **SDDS – Database Katalog**.
+2. Menu **Ekstensi → Apps Script**. Hapus isi `Code.gs`, tempel seluruh isi file `apps-script/Kode.gs`, lalu **Simpan** (ikon disket).
+3. Kembali ke tab spreadsheet dan muat ulang (F5). Muncul menu **SDDS** di samping menu Bantuan.
+4. **SDDS → 1. Siapkan database**. Saat diminta izin: pilih akun → *Google hasn't verified this app* → **Advanced / Lanjutan** → **Go to … (unsafe) / Buka … (tidak aman)** → **Allow / Izinkan**. Peringatan ini wajar untuk script buatan sendiri.
+5. **SDDS → 2. Atur kunci editor** → tulis kunci (minimal 8 karakter). Kunci ini dipakai perangkat untuk menyimpan perubahan dari website.
+6. Kembali ke Apps Script: **Terapkan (Deploy) → Deployment baru** → ikon roda gigi → **Aplikasi web**.
+   - *Jalankan sebagai*: **Saya**
+   - *Yang memiliki akses*: **Siapa saja**
+   - **Terapkan**, lalu salin **URL aplikasi web** (berakhiran `/exec`).
+7. Di GitHub, edit `data/katalog.js`: isi `backend: { url: "…/exec" }` dengan URL tadi → **Commit**.
+8. Buka website → **Edit** → masukkan kunci editor → klik **Impor data awal** (sekali saja). Selesai.
+
+Catatan:
+- Bila isi `Kode.gs` diganti, buat versi baru: **Terapkan → Kelola deployment → pensil → Versi: Versi baru → Terapkan**. URL tetap sama.
+- Tab *Kategori* dan *Data* boleh juga diedit langsung di spreadsheet. Baris baru tanpa `id` otomatis diberi id.
+- Membaca daftar tautan tidak butuh kunci (sama seperti `katalog.js` sekarang); menyimpan perubahan wajib kunci editor. Isi berkas tetap dilindungi pengaturan berbagi Google Drive.
 
 ## Akun perangkat desa (halaman masuk)
 

@@ -104,12 +104,14 @@
       <a href="#panduan">Panduan</a>
     </nav>
     <div class="nav-actions">
+      <button class="icon-btn edit-toggle" id="edit-toggle" type="button" aria-pressed="false" title="Mode edit: ubah link, kategori, dan tambah data"></button>
       <button class="icon-btn" id="theme-toggle" type="button" aria-label="Ganti tema terang/gelap"></button>
       <button class="icon-btn" id="logout" type="button" aria-label="Keluar" title="Keluar" hidden></button>
       <button class="icon-btn nav-burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Buka menu"></button>
     </div>
   </div>
 </header>
+<div class="sync-note" id="sync-note" hidden></div>
 
 <main id="konten">
   <div id="view-home">
@@ -203,6 +205,7 @@
           <label for="f-kat" class="sr-only">Saring kategori</label>
           <select id="f-kat"></select>
         </div>
+        <button class="btn" type="button" id="katalog-add" data-act="add-item" hidden><span data-icon="plus"></span>Tambah tautan</button>
         <div class="field">
           <label for="f-sort" class="sr-only">Urutkan</label>
           <select id="f-sort">
@@ -250,7 +253,7 @@
           </li>
           <li>
             <h3>Catat di SDDS</h3>
-            <p>Buka repositori GitHub, edit <code>data/katalog.js</code>, salin satu blok data, ganti judul, tautan, dan tanggal, lalu <b>Commit</b>. Situs ikut berubah dalam ±1 menit.</p>
+            <p>Klik tombol <b>Edit</b> (ikon pensil) di kanan atas, lalu <b>Tambah tautan</b>: tempel link, beri judul, pilih kategori, dan <b>Simpan</b>. Link yang salah bisa diganti lewat tombol <b>Ubah</b> di setiap data.</p>
           </li>
         </ol>
         <aside class="help">
@@ -293,6 +296,8 @@
   </div>
 </footer>
 
+<div class="editbar" id="editbar" hidden></div>
+<dialog class="dlg" id="dlg" aria-label="Formulir mode edit"></dialog>
 </div><!-- /#app -->
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
