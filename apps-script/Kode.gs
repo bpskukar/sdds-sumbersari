@@ -30,7 +30,7 @@
 var SHEET_ID = '1sAWFy-y3M0ea9Z5wEPF7fUetB7PqV8MpUAQ3qt24OUg';          // spreadsheet database ini
 var DATA_PENDUDUK_ID = '1C4eFqkd-xjLurRsvzEFMxHB_-GAqdSIZ-uN3lFxWFfQ';  // "DATA SUMBER SARI" untuk dasbor
 var FOLDER_INDUK_ID = '1meMzbGUxPfD1aELKz-p-Mz_Sdf6ZCJrj';             // folder DESA CANTIK
-var SITUS_URL = 'https://bpskukar.github.io/sdds-sumbersari/';
+var SITUS_URL = 'https://descansumbersari.github.io/sdds-sumbersari/';
 var EMAIL_DESA = 'desacantikdesasumbersari@gmail.com';
 var VERSI = 2;
 var BATAS_UNGGAH = 20 * 1024 * 1024;   // 20 MB per berkas
@@ -708,7 +708,7 @@ function cadangkan_(oleh) {
   var semua = [], it = folder.getFiles();
   while (it.hasNext()) { var f = it.next(); if (!f.isTrashed()) semua.push(f); }
   semua.sort(function (a, b) { return b.getDateCreated() - a.getDateCreated(); });
-  semua.slice(JUMLAH_CADANGAN).forEach(function (f) { f.setTrashed(true); });
+  semua.slice(JUMLAH_CADANGAN).forEach(function (f) { try { f.setTrashed(true); } catch (e) { /* milik akun lain: biarkan */ } });
   var p = props_();
   p.setProperty('CADANGAN_TERAKHIR', sekarang_());
   p.setProperty('CADANGAN_WAKTU', String(Date.now()));
