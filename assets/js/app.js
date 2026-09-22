@@ -520,10 +520,11 @@
     function renderNav() {
       var menu = (db.state.menu || []).filter(function (m) { return m && m.label && m.url; });
       navLinks.innerHTML = menu.map(function (m) {
-        return '<a class="nav-ext" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + (m.terbatas ? ic("lock") : ic("sheet")) + esc(m.label) + "</a>";
+        return '<a class="nav-ext" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + (m.terbatas ? ic("lock") : /(docs|drive)\.google\./.test(m.url) ? ic("sheet") : ic("globe")) + esc(m.label) + "</a>";
       }).join("") + NAV_TETAP.map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + "</a>"; }).join("") +
         '<a href="#/panduan" class="nav-panduan' + (/^#\/panduan/.test(location.hash) ? " aktif" : "") + '">Panduan</a>' +
         '<a href="#/statistik" class="nav-stat' + (/^#\/statistik/.test(location.hash) ? " aktif" : "") + '">Statistik</a>' +
+        '<a class="nav-ext nav-web" href="' + esc((S.desa && S.desa.website) || "https://sumbersari.klandesa.com/") + '" target="_blank" rel="noopener" title="Website resmi Desa Sumber Sari (tab baru)">' + ic("globe") + "Web Desa</a>" +
         (sudahTerpasang() ? "" : '<a href="#pasang" class="nav-pasang" data-act="pasang">' + ic("phone") + "Pasang SDDS di HP</a>");
       navA = $$(".nav-links a[href^='#']");
     }
