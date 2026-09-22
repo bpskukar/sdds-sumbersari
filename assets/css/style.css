@@ -191,12 +191,13 @@ code { font-family: var(--f-mono); font-size: .86em; background: var(--surface-2
   text-decoration: none; font-weight: 600; font-size: 14.5px; color: var(--hero-ink-2); white-space: nowrap;
   padding: 8px 12px; border-radius: 999px; transition: color .15s, background .15s;
 }
-@media (min-width: 1121px) and (max-width: 1320px) { .nav-links a { padding: 8px 9px; font-size: 14px; } .nav-row { gap: 10px; } }
+.nav-row.wrap { max-width: 1440px; }
+@media (min-width: 1280px) and (max-width: 1439px) { .nav-links a { padding: 8px 9px; font-size: 14px; } .nav-links { gap: 2px; } .nav-row { gap: 10px; } }
 .nav-links a:hover, .nav-links a.aktif { color: var(--hero-ink); background: rgba(255, 255, 255, .1); }
 .nav-actions { display: flex; gap: 8px; }
 .nav-burger { display: none; }
 
-@media (max-width: 1120px) {
+@media (max-width: 1279px) {
   .nav-burger { display: inline-grid; }
   .nav-links {
     position: absolute; left: 0; right: 0; top: 100%;
@@ -1159,7 +1160,7 @@ body.editing .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 
 /* ---------- pasang di HP ---------- */
 .nav-links .nav-pasang { display: none; }
-@media (max-width: 1120px) {
+@media (max-width: 1279px) {
   .nav-links .nav-pasang {
     display: flex; align-items: center; gap: 10px; color: var(--gold);
     margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .1); border-radius: 0;
