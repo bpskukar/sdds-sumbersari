@@ -70,7 +70,8 @@
     gear: '<path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
     dots: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
     globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
-    table: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/>'
+    table: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'
   };
   function ic(name) {
     return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || ICONS.folder) + "</svg>";
@@ -515,13 +516,14 @@
     /* =================================================================
        RENDER BAGIAN HALAMAN
        ================================================================= */
-    var NAV_TETAP = [["kategori", "Kategori"], ["alur", "Alur Data"], ["katalog", "Katalog"], ["publikasi", "Publikasi"], ["panduan", "Panduan"]];
+    var NAV_TETAP = [["kategori", "Kategori"], ["alur", "Alur Data"], ["katalog", "Katalog"], ["publikasi", "Publikasi"]];
     function renderNav() {
       var menu = (db.state.menu || []).filter(function (m) { return m && m.label && m.url; });
       navLinks.innerHTML = menu.map(function (m) {
         return '<a class="nav-ext" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + (m.terbatas ? ic("lock") : ic("sheet")) + esc(m.label) + "</a>";
       }).join("") + NAV_TETAP.map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + "</a>"; }).join("") +
-        '<a href="#/statistik" class="nav-stat">Statistik</a>' +
+        '<a href="#/panduan" class="nav-panduan' + (/^#\/panduan/.test(location.hash) ? " aktif" : "") + '">Panduan</a>' +
+        '<a href="#/statistik" class="nav-stat' + (/^#\/statistik/.test(location.hash) ? " aktif" : "") + '">Statistik</a>' +
         (sudahTerpasang() ? "" : '<a href="#pasang" class="nav-pasang" data-act="pasang">' + ic("phone") + "Pasang SDDS di HP</a>");
       navA = $$(".nav-links a[href^='#']");
     }
@@ -725,6 +727,7 @@
         '<button type="button" role="menuitem" data-act="edit-menu">' + ic("menu") + "Menu atas</button>" +
         '<button type="button" role="menuitem" data-act="panel-log">' + ic("history") + "Riwayat, sampah &amp; cadangan</button>" +
         '<button type="button" role="menuitem" data-act="panel-atur">' + ic("gear") + "Pengaturan otomatis</button>" +
+        '<a role="menuitem" href="#/panduan/mode-edit" data-act="ke-panduan">' + ic("book") + "Panduan pengelola</a>" +
         (S.backend && S.backend.sheet ? '<a role="menuitem" href="' + esc(S.backend.sheet) + '" target="_blank" rel="noopener">' + ic("sheet") + "Buka spreadsheet database</a>" : "") +
         "</div></div>" +
         (MODE === "sheet" && db.kosong ? '<button class="btn sm gold" type="button" data-act="impor">' + ic("upload") + "Impor data awal</button>" : "") +
@@ -817,7 +820,7 @@
     /* =================================================================
        HALAMAN KATEGORI
        ================================================================= */
-    var viewHome = $("#view-home"), viewKat = $("#view-kategori"), viewStat = $("#view-statistik");
+    var viewHome = $("#view-home"), viewKat = $("#view-kategori"), viewStat = $("#view-statistik"), viewPanduan = $("#view-panduan");
     var kstate = { q: "", grup: "semua" };
     var katAktif = null;
 
@@ -889,6 +892,7 @@
 
       viewHome.hidden = true;
       viewStat.hidden = true;
+      viewPanduan.hidden = true;
       viewKat.hidden = false;
       document.title = k.nama + " · Satu Data Desa Sumber Sari";
       if (!pertahankan) window.scrollTo(0, 0);
@@ -896,10 +900,11 @@
     }
 
     function showHome(hash) {
-      var wasKat = !viewKat.hidden || !viewStat.hidden;
+      var wasKat = !viewKat.hidden || !viewStat.hidden || !viewPanduan.hidden;
       katAktif = null;
       viewKat.hidden = true;
       viewStat.hidden = true;
+      viewPanduan.hidden = true;
       viewHome.hidden = false;
       document.title = "Satu Data Desa Sumber Sari";
       var id = hash && hash.charAt(1) !== "/" ? hash.slice(1) : "";
@@ -909,8 +914,11 @@
     }
     function route() {
       var m = location.hash.match(/^#\/k\/([\w-]+)/);
+      var mp = location.hash.match(/^#\/panduan(?:\/([\w-]+))?/);
       if (m && KAT[m[1]]) showKategori(m[1]);
       else if (/^#\/statistik/.test(location.hash)) showDasbor();
+      else if (mp) showPanduan(mp[1]);
+      else if (location.hash === "#panduan") { try { history.replaceState(null, "", "#/panduan"); } catch (e) { /* abaikan */ } showPanduan(); }
       else showHome(location.hash);
     }
 
@@ -960,6 +968,7 @@
       katAktif = null;
       viewHome.hidden = true;
       viewKat.hidden = true;
+      viewPanduan.hidden = true;
       viewStat.hidden = false;
       document.title = "Statistik Penduduk · Satu Data Desa Sumber Sari";
       if (dariLain) window.scrollTo(0, 0);
@@ -970,6 +979,60 @@
       muatDasbor(false);
     }
     window.addEventListener("hashchange", route);
+
+    /* =================================================================
+       PANDUAN PENGGUNAAN (#/panduan, #/panduan/<bagian>)
+       ================================================================= */
+    var pdToc = $("#pd-toc"), pdLinks = $$("#pd-toc nav a");
+    function tandaiToc(id) {
+      pdLinks.forEach(function (a) {
+        var on = a.getAttribute("href") === "#/panduan/" + id;
+        a.classList.toggle("aktif", on);
+        if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+      });
+    }
+    function showPanduan(bagian) {
+      var dariLain = viewPanduan.hidden;
+      katAktif = null;
+      viewHome.hidden = true;
+      viewKat.hidden = true;
+      viewStat.hidden = true;
+      viewPanduan.hidden = false;
+      document.title = "Panduan Penggunaan · Satu Data Desa Sumber Sari";
+      setActiveNav(null);
+      var a = $(".nav-panduan");
+      if (a) a.classList.add("aktif");
+      var el = bagian && document.getElementById("pd-" + bagian);
+      if (el) {
+        if (pdToc && matchMedia("(max-width: 900px)").matches) pdToc.open = false;
+        requestAnimationFrame(function () { el.scrollIntoView({ behavior: dariLain ? "auto" : "smooth", block: "start" }); });
+        tandaiToc(bagian);
+      } else if (dariLain) window.scrollTo(0, 0);
+    }
+    (function () {
+      if (!pdToc) return;
+      /* daftar isi terbuka di layar lebar, terlipat di HP */
+      var mq = matchMedia("(max-width: 900px)");
+      function atur() { pdToc.open = !mq.matches; }
+      atur();
+      if (mq.addEventListener) mq.addEventListener("change", atur); else if (mq.addListener) mq.addListener(atur);
+      if ("IntersectionObserver" in window) {
+        var ioPd = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { if (en.isIntersecting && !viewPanduan.hidden) tandaiToc(en.target.id.replace(/^pd-/, "")); });
+        }, { rootMargin: "-20% 0px -70% 0px" });
+        $$(".pd-sec").forEach(function (sec) { ioPd.observe(sec); });
+      }
+      /* cetak: buka semua tanya-jawab dulu agar ikut tercetak */
+      var faqTerbuka = [];
+      window.addEventListener("beforeprint", function () {
+        faqTerbuka = $$(".pd-faq").map(function (d) { var o = d.open; d.open = true; return o; });
+      });
+      window.addEventListener("afterprint", function () {
+        $$(".pd-faq").forEach(function (d, i) { d.open = !!faqTerbuka[i]; });
+      });
+      var cetak = $("#pd-cetak");
+      if (cetak) cetak.addEventListener("click", function () { window.print(); });
+    })();
 
     /* ---------- sorot menu aktif ---------- */
     var navA = [];
@@ -1994,6 +2057,7 @@
       }
       if (act === "versi-lama") { butuhV2("Perbarui Apps Script"); return; }
       if (act === "pasang") { pasangAplikasi(); return; }
+      if (act === "ke-panduan") { location.hash = t.getAttribute("href"); return; }
       if (act === "dasbor-muat") { muatDasbor(true); return; }
       if (act === "edit-off") { editing = false; renderSemua(); return; }
       if (act === "reset-lokal") {
